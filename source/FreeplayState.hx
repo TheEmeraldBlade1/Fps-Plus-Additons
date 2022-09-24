@@ -33,7 +33,7 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-
+		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Freeplay";
 		openfl.Lib.current.stage.frameRate = 144;
 		
 		curSelected = 0;
@@ -221,11 +221,11 @@ class FreeplayState extends MusicBeatState
 		switch (curDifficulty)
 		{
 			case 0:
-				diffText.text = "EASY";
+				diffText.text = "< EASY >";
 			case 1:
-				diffText.text = 'NORMAL';
+				diffText.text = '< NORMAL >';
 			case 2:
-				diffText.text = "HARD";
+				diffText.text = "< HARD >";
 		}
 	}
 

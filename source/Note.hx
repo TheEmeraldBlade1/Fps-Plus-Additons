@@ -1,7 +1,8 @@
 package;
 
 import config.*;
-
+import flixel.FlxG;
+import flixel.util.FlxColor;
 import flixel.FlxSprite;
 //import polymod.format.ParseRules.TargetSignatureElement;
 
@@ -51,7 +52,6 @@ class Note extends FlxSprite
 
 		prevNote = _prevNote;
 		isSustainNote = _sustainNote;
-
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 

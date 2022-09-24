@@ -48,6 +48,7 @@ import flixel.ui.FlxBar;
 //import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
+import openfl.Lib;
 //import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
 //import haxe.Json;
@@ -243,6 +244,14 @@ class PlayState extends MusicBeatState
 	
 	override public function create()
 	{
+		if (FlxG.save.data.debplayer)
+		{
+			boyfriend.color = FlxColor.GREEN;
+			dad.color = FlxColor.RED;
+			gf.color = FlxColor.CYAN;
+		}
+		if(Config.HighSpeed)
+			SONG.speed = 2.5;
 
 		instance = this;
 		FlxG.mouse.visible = false;
@@ -919,11 +928,20 @@ class PlayState extends MusicBeatState
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		// healthBar
-		
-		scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
-		scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		scoreTxt.scrollFactor.set();
-
+		switch(Config.accuracy){
+			case "none":
+				scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
+				scoreTxt.setFormat(Paths.font("vcr"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				scoreTxt.scrollFactor.set();
+			case "simple":
+				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
+				scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				scoreTxt.scrollFactor.set();		
+			default:
+				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
+				scoreTxt.setFormat(Paths.font("vcr"), 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				scoreTxt.scrollFactor.set();		
+		}
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		
@@ -1302,7 +1320,12 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(songData.bpm);
 
 		curSong = songData.song;
-
+		if (storyDifficulty == 2)
+			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+		else if (storyDifficulty == 1)
+			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+		else
+			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
 		if (SONG.needsVoices)
 		{
 			vocals = new FlxSound().loadEmbedded(Paths.music(curSong + "_Voices"));
@@ -1492,7 +1515,7 @@ class PlayState extends MusicBeatState
 
 			babyArrow.y -= 10;
 			babyArrow.alpha = 0;
-			FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+			FlxTween.tween(babyArrow, {y: babyArrow.y + 10}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
 
 			babyArrow.ID = i;
 
@@ -1510,11 +1533,19 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
+			if (player == 0)
+				babyArrow.alpha = 0.70;
+			else
+				babyArrow.alpha = 1;
 
 			babyArrow.animation.play('static');
 			babyArrow.x += 50;
 			babyArrow.x += ((FlxG.width / 2) * player);
 
+			if (FlxG.save.data.redNotes && player == 1)
+				babyArrow.color = FlxColor.RED;
+			if (FlxG.save.data.greenNotes && player == 1)
+				babyArrow.color = FlxColor.GREEN;
 			strumLineNotes.add(babyArrow);
 		}
 	}
@@ -1646,8 +1677,10 @@ class PlayState extends MusicBeatState
 		switch(Config.accuracy){
 			case "none":
 				scoreTxt.text = "Score:" + songScore;
-			default:
+			case "simple":
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
+			default:
+				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
 		}
 
 		if (controls.PAUSE && startedCountdown && canPause)
@@ -1819,7 +1852,7 @@ class PlayState extends MusicBeatState
 			PlayerSettings.menuControls();
 			//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
 			//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyUp);
-
+			openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Fuckin' Died";
 			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y, camFollow.getScreenPosition().x, camFollow.getScreenPosition().y));
 			sectionStart = false;
 
@@ -1914,7 +1947,7 @@ class PlayState extends MusicBeatState
 			if(daNote.tooLate){
 				if (daNote.alpha > 0.3){
 					noteMiss(daNote.noteData, 0.055, false, true);
-					vocals.volume = 0;
+					//vocals.volume = 0;
 					daNote.alpha = 0.3;
 				}
 			}
@@ -1994,6 +2027,7 @@ class PlayState extends MusicBeatState
 
 	public function endSong():Void
 	{
+		Lib.application.window.title = "Friday Night Funkin' FPS Plus";
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
@@ -2372,7 +2406,7 @@ class PlayState extends MusicBeatState
 						case 0:
 							if(leftRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								vocals.volume = 0;
+								//vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2381,7 +2415,7 @@ class PlayState extends MusicBeatState
 						case 1:
 							if(downRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								vocals.volume = 0;
+								//vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2390,7 +2424,7 @@ class PlayState extends MusicBeatState
 						case 2:
 							if(upRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								vocals.volume = 0;
+								//vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2399,7 +2433,7 @@ class PlayState extends MusicBeatState
 						case 3:
 							if(rightRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								vocals.volume = 0;
+								//vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2517,6 +2551,12 @@ class PlayState extends MusicBeatState
 	{
 		if (!startingSong && (!invuln || skipInvCheck) )
 		{
+			if (storyDifficulty == 2)
+				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			else if (storyDifficulty == 1)
+				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			else
+				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
 			health -= healthLoss * Config.healthDrainMultiplier;
 			if (combo > minCombo)
 			{
@@ -2559,22 +2599,13 @@ class PlayState extends MusicBeatState
 		{
 			if (!startingSong && !invuln)
 			{
+				if (storyDifficulty == 2)
+					Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+				else if (storyDifficulty == 1)
+					Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+				else
+					Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
 				health -= healthLoss * Config.healthDrainMultiplier;
-
-				if(dropCombo){
-					if (combo > minCombo){
-						gf.playAnim('sad');
-						comboUI.breakPopup();
-					}	
-					combo = 0;
-				}
-	
-				songScore -= 25;
-				
-				FlxG.sound.play(Paths.sound('missnote' + FlxG.random.int(1, 3)), FlxG.random.float(0.1, 0.2));
-	
-				setBoyfriendInvuln(4 / 60);
-	
 				if(boyfriend.canAutoAnim){
 					switch (direction)
 					{
@@ -2663,7 +2694,7 @@ class PlayState extends MusicBeatState
 			noteMiss(note.noteData, 0.05, true, true);
 			note.prevNote.tooLate = true;
 			note.prevNote.destroy();
-			vocals.volume = 0;
+			//vocals.volume = 0;
 		}
 
 		else if (!note.wasGoodHit)
@@ -2716,7 +2747,12 @@ class PlayState extends MusicBeatState
 			if(!note.isSustainNote){
 				note.destroy();
 			}
-			
+			if (storyDifficulty == 2)
+				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			else if (storyDifficulty == 1)
+				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			else
+				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
 			updateAccuracy();
 		}
 	}

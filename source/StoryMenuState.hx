@@ -48,7 +48,7 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
-
+		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Story";
 		openfl.Lib.current.stage.frameRate = 144;
 	
 		weekData = [
