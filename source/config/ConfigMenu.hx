@@ -33,6 +33,7 @@ class ConfigMenu extends MusicBeatState
 	var comboValue:Int;
 	var comboTypes:Array<String> = ["world", "hud", "off"];
 	var downValue:Bool;
+	var scrollValue:Bool;
 	var glowValue:Bool;
 	var randomTapValue:Int;
 	var randomTapTypes:Array<String> = ["never", "not singing", "always"];
@@ -52,7 +53,7 @@ class ConfigMenu extends MusicBeatState
 									"NOTE OFFSET", 
 									"ACCURACY DISPLAY", 
 									"UNCAPPED FRAMERATE",
-									"ALLOW GHOST TAPPING",
+									"NEW INPUT WHEN?",
 									"HP GAIN MULTIPLIER",
 									"HP DRAIN MULTIPLIER",
 									"DOWNSCROLL",
@@ -61,50 +62,52 @@ class ConfigMenu extends MusicBeatState
 									"BACKGROUND DIM",
 									"[CACHE SETTINGS]",
 									"CONTROLLER SCHEME",
-									"[EDIT KEY BINDS]"
+									"[EDIT KEY BINDS]",
+									"HIGH SCROLL SPEED"
 									];
 		
 	//Any descriptions that say TEMP are replaced with a changing description based on the current config setting.
 	final settingDesc:Array<String> = [
-									"Adjust note timings.\nPress \"ENTER\" to start the offset calibration." + (FlxG.save.data.ee1?"\nHold \"SHIFT\" to force the pixel calibration.\nHold \"CTRL\" to force the normal calibration.":""), 
-									"What type of accuracy calculation you want to use. Simple is just notes hit / total notes. Complex also factors in how early or late a note was.", 
-									#if desktop "Uncaps the framerate during gameplay." #else "Disabled on Web builds." #end,
-									"TEMP",
-									"Modifies how much Health you gain when hitting a note.",
-									"Modifies how much Health you lose when missing a note.",
-									"Makes notes appear from the top instead the bottom.",
-									"Makes note arrows glow if they are able to be hit.",
-									"TEMP",
-									"Adjusts how dark the background is.\nIt is recommended that you use the HUD combo display with a high background dim.",
-									"Change what assets the game keeps cached.",
-									"TEMP",
-									"Change key binds."
+									"\nAdjust note timings.\nPress \"ENTER\" to start the offset calibration." + (FlxG.save.data.ee1?"\nHold \"SHIFT\" to force the pixel calibration.\nHold \"CTRL\" to force the normal calibration.":""), 
+									"\nWhat type of accuracy calculation you want to use. Simple is just notes hit / total notes and fps plus rating system. Complex also factors in how early or late a note was.", 
+									#if desktop "\nUncaps the framerate during gameplay." #else "Disabled on Web builds." #end,
+									"\nTEMP",
+									"\nModifies how much Health you gain when hitting a note.",
+									"\nModifies how much Health you lose when missing a note.",
+									"\nMakes notes appear from the top instead the bottom.",
+									"\nMakes note arrows glow if they are able to be hit.",
+									"\nTEMP",
+									"\nAdjusts how dark the background is.\nIt is recommended that you use the HUD combo display with a high background dim.",
+									"\nChange what assets the game keeps cached.",
+									"\nTEMP",
+									"\nChange key binds.",
+									"\nForce songs to have high scroll speed"
 									];
 
 	final ghostTapDesc:Array<String> = [
-									"Any key press that isn't for a valid note will cause you to miss.", 
-									"You can only  miss while you need to sing.", 
-									"You cannot miss unless you do not hit a note.\n[Note that this makes the game very easy and can remove a lot of the challenge.]"
+									"\nAny key press that isn't for a valid note will cause you to miss.", 
+									"\nYou can only  miss while you need to sing.", 
+									"\nYou cannot miss unless you do not hit a note.\n[Note that this makes the game very easy and can remove a lot of the challenge.]"
 									];					
 
 	final comboDisplayDesc:Array<String> = [
-									"Ratings and combo count are a part of the world and move around with the camera.", 
-									"Ratings and combo count are a part of the hud and stay in a static position.", 
-									"Ratings and combo count are hidden."
+									"\nRatings and combo count are a part of the world and move around with the camera.", 
+									"\nRatings and combo count are a part of the hud and stay in a static position.", 
+									"\nRatings and combo count are hidden."
 									];
 
 	final controlSchemes:Array<String> = [
-									"DEFAULT", 
-									"ALT 1", 
-									"ALT 2",
-									"[CUSTOM]"
+									"\nDEFAULT", 
+									"\nALT 1", 
+									"\nALT 2",
+									"\n[CUSTOM]"
 									];
 
 	final controlSchemesDesc:Array<String> = [
-									"LEFT: DPAD LEFT / X (SQUARE) / LEFT TRIGGER\nDOWN: DPAD DOWN / X (CROSS) / LEFT BUMPER\nUP: DPAD UP / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: DPAD RIGHT / B (CIRCLE) / RIGHT TRIGGER", 
-									"LEFT: DPAD LEFT / DPAD DOWN / LEFT TRIGGER\nDOWN: DPAD UP / DPAD RIGHT / LEFT BUMPER\nUP: X (SQUARE) / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: A (CROSS) / B (CIRCLE) / RIGHT TRIGGER", 
-									"LEFT: ALL DPAD DIRECTIONS\nDOWN: LEFT BUMPER / LEFT TRIGGER\nUP: RIGHT BUMPER / RIGHT TRIGGER\nRIGHT: ALL FACE BUTTONS",
-									"Press A (CROSS) to change controller binds."
+									"\nLEFT: DPAD LEFT / X (SQUARE) / LEFT TRIGGER\nDOWN: DPAD DOWN / X (CROSS) / LEFT BUMPER\nUP: DPAD UP / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: DPAD RIGHT / B (CIRCLE) / RIGHT TRIGGER", 
+									"\nLEFT: DPAD LEFT / DPAD DOWN / LEFT TRIGGER\nDOWN: DPAD UP / DPAD RIGHT / LEFT BUMPER\nUP: X (SQUARE) / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: A (CROSS) / B (CIRCLE) / RIGHT TRIGGER", 
+									"\nLEFT: ALL DPAD DIRECTIONS\nDOWN: LEFT BUMPER / LEFT TRIGGER\nUP: RIGHT BUMPER / RIGHT TRIGGER\nRIGHT: ALL FACE BUTTONS",
+									"\nPress A (CROSS) to change controller binds."
 									];
 
 									
@@ -112,7 +115,8 @@ class ConfigMenu extends MusicBeatState
 
 	override function create()
 	{	
-		
+
+		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Option";
 		openfl.Lib.current.stage.frameRate = 144;
 
 		if(exitTo == null){
@@ -145,6 +149,7 @@ class ConfigMenu extends MusicBeatState
 		healthDrainValue = Std.int(Config.healthDrainMultiplier * 10);
 		comboValue = Config.comboType;
 		downValue = Config.downscroll;
+		scrollValue = Config.HighSpeed;
 		glowValue = Config.noteGlow;
 		randomTapValue = Config.ghostTapType;
 		noCapValue = Config.noFpsCap;
@@ -181,7 +186,7 @@ class ConfigMenu extends MusicBeatState
 		tabDisplay.visible = false;
 		tabDisplay.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
-		var backText = new FlxText(5, FlxG.height - 37, 0, "ESCAPE - Back to Menu\nBACKSPACE - Reset to Defaults\n", 16);
+		var backText = new FlxText(5, FlxG.height - 37, 0, "ESCAPE - Back to Menu\nR - Reset to Defaults\n", 16);
 		backText.scrollFactor.set();
 		backText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
@@ -327,10 +332,10 @@ class ConfigMenu extends MusicBeatState
 								healthValue -= 1;
 							}
 							
-							if (healthValue > 100)
+							if (healthValue > 1000)
 								healthValue = 0;
 							if (healthValue < 0)
-								healthValue = 100;
+								healthValue = 1000;
 								
 						if (controls.RIGHT)
 						{
@@ -374,10 +379,10 @@ class ConfigMenu extends MusicBeatState
 								healthDrainValue -= 1;
 							}
 							
-							if (healthDrainValue > 100)
+							if (healthDrainValue > 1000)
 								healthDrainValue = 0;
 							if (healthDrainValue < 0)
-								healthDrainValue = 100;
+								healthDrainValue = 1000;
 								
 						if (controls.RIGHT)
 						{
@@ -491,6 +496,11 @@ class ConfigMenu extends MusicBeatState
 							writeToConfig();
 							switchState(new KeyBindMenu());
 						}
+						case 13: //scroll speed high
+						if (controls.RIGHT_P || controls.LEFT_P || controls.ACCEPT) {
+							FlxG.sound.play(Paths.sound('scrollMenu'));
+							scrollValue = !scrollValue;
+						}
 					
 			}
 		}
@@ -518,7 +528,7 @@ class ConfigMenu extends MusicBeatState
 			exit();
 		}
 
-		if (FlxG.keys.justPressed.BACKSPACE && canChangeItems)
+		if (FlxG.keys.justPressed.R && canChangeItems)
 		{
 			Config.resetSettings();
 			FlxG.save.data.ee1 = false;
@@ -628,14 +638,11 @@ class ConfigMenu extends MusicBeatState
 		switch(combo){
 
 			case "KADE":
-				Config.write(offsetValue, "complex", 5, 5, 1, downValue, false, 2, noCapValue, scheme, dimValue);
-				exit();
+				System.exit(0); //I am very funny.
 			case "ROZE":
-				Config.write(offsetValue, "simple", 1, 1, 0, true, true, 0, noCapValue, scheme, dimValue);
-				exit();
+				System.exit(0); //I am very funny.
 			case "CVAL":
-				Config.write(offsetValue, "simple", 1, 1, comboValue, false, glowValue, 1, noCapValue, scheme, dimValue);
-				exit();
+				System.exit(0); //I am very funny.
 			case "GOTOHELLORSOMETHING":
 				System.exit(0); //I am very funny.
 
@@ -644,7 +651,7 @@ class ConfigMenu extends MusicBeatState
 	}
 
 	function writeToConfig(){
-		Config.write(offsetValue, accuracyType, healthValue / 10.0, healthDrainValue / 10.0, comboValue, downValue, glowValue, randomTapValue, noCapValue, scheme, dimValue);
+		Config.write(offsetValue, accuracyType, healthValue / 10.0, healthDrainValue / 10.0, comboValue, downValue, scrollValue, glowValue, randomTapValue, noCapValue, scheme, dimValue);
 	}
 
 }
