@@ -165,7 +165,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to menu":
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
-
+					PlayState.misses = 0; // stop carring over to other songs mother fucker
 					PlayState.sectionStart = false;
 					if (PlayState.isStoryMode)
 					{

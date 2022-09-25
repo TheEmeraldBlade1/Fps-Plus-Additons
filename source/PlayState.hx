@@ -2068,6 +2068,7 @@ class PlayState extends MusicBeatState
 
 	public function endSong():Void
 	{
+		misses = 0; // shit was fuckin' up
 		Lib.application.window.title = "Friday Night Funkin' FPS Plus";
 		canPause = false;
 		FlxG.sound.music.volume = 0;
