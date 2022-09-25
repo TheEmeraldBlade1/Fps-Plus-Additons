@@ -25,17 +25,17 @@ class Ratings
 			accuracy >= 99.970, // AAAA.
 			accuracy >= 99.955, // AAAA
 			accuracy >= 99.90, // AAA:
-			accuracy >= 99.80, // AAA.
-			accuracy >= 99.70, // AAA
-			accuracy >= 99, // AA:
-			accuracy >= 96.50, // AA.
-			accuracy >= 93, // AA
-			accuracy >= 90, // A:
-			accuracy >= 85, // A.
-			accuracy >= 80, // A
-			accuracy >= 70, // B
-			accuracy >= 60, // C
-			accuracy < 60 // D
+			accuracy >= 99, // AAA.
+			accuracy >= 89, // AAA
+			accuracy >= 79, // AA:
+			accuracy >= 69, // AA.
+			accuracy >= 59, // AA
+			accuracy >= 49, // A:
+			accuracy >= 39, // A.
+			accuracy >= 29, // A
+			accuracy >= 19, // B
+			accuracy >= 9, // C
+			accuracy < 10 // D
 		];
 
 		for (i in 0...wifeConditions.length)
