@@ -8,11 +8,11 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 
-class PauseSubState extends MusicBeatSubstate
+class EpicGamerChanges extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', "Options",'Exit to menu'];
+	var menuItems:Array<String> = ['Resume', 'High Scroll Speed',"Green Note Colors", "Red Note Colors", "Options"];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -21,19 +21,7 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		super();
 		openfl.Lib.current.stage.frameRate = 144;
-		
-		if (PlayState.storyPlaylist.length > 1 && PlayState.isStoryMode){
-			menuItems.insert(2, "Skip Song");
-		}
-		
-		if (!PlayState.isStoryMode){
-			menuItems.insert(2, "Chart Editor");
-		}
-
-		if (!PlayState.isStoryMode && PlayState.sectionStart){
-			menuItems.insert(1, "Restart Section");
-		}
-
+	
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		
 		pauseMusic.volume = 0;
@@ -138,6 +126,18 @@ class PauseSubState extends MusicBeatSubstate
 						FlxG.save.data.greenNotes = true;
 						FlxG.resetState();
 					}
+
+					case "High Scroll Speed":
+						if (FlxG.save.data.HighSpeed)
+						{
+							FlxG.save.data.HighSpeed = false;
+							//FlxG.resetState();
+						}
+						else
+						{
+							FlxG.save.data.HighSpeed = true;
+							//FlxG.resetState();
+						}
 
 					case "Player Debug":
 						if (FlxG.save.data.debplayer)

@@ -63,7 +63,26 @@ class PlayState extends MusicBeatState
 {
 
 	public static var instance:PlayState = null;
-
+	public var ratingName:String = '?';
+	public var ratingPercent:Float;
+	public var ratingFC:String;
+	//public var ratingStuff:String;
+	public static var ratingStuff:Array<Dynamic> = [
+		['You Suck!', 0.2], //From 0% to 19%
+		['Shit', 0.4], //From 20% to 39%
+		['Bad', 0.5], //From 40% to 49%
+		['Bruh', 0.6], //From 50% to 59%
+		['Meh', 0.69], //From 60% to 68%
+		['Nice', 0.7], //69%
+		['Good', 0.8], //From 70% to 79%
+		['Great', 0.9], //From 80% to 89%
+		['Sick!', 1], //From 90% to 99%
+		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
+	];
+	public static var shits:Int = 0;
+	public static var bads:Int = 0;
+	public static var goods:Int = 0;
+	public static var sicks:Int = 0;
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
 	public static var EVENTS:SongEvents;
@@ -157,7 +176,7 @@ class PlayState extends MusicBeatState
 
 	private var health:Float = 1;
 	private var combo:Int = 0;
-	private var misses:Int = 0;
+	public static var misses:Int = 0;
 	private var accuracy:Float = 0.00;
 	private var totalNotesHit:Float = 0;
 	private var totalPlayed:Int = 0;
@@ -244,14 +263,15 @@ class PlayState extends MusicBeatState
 	
 	override public function create()
 	{
+		ratingFC = "N/A";
 		if (FlxG.save.data.debplayer)
 		{
 			boyfriend.color = FlxColor.GREEN;
 			dad.color = FlxColor.RED;
 			gf.color = FlxColor.CYAN;
 		}
-		if(Config.HighSpeed)
-			SONG.speed = 2.5;
+		if(FlxG.save.data.HighSpeed)
+			SONG.speed = 2.8;
 
 		instance = this;
 		FlxG.mouse.visible = false;
@@ -934,6 +954,10 @@ class PlayState extends MusicBeatState
 				scoreTxt.setFormat(Paths.font("vcr"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();
 			case "simple":
+				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
+				scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				scoreTxt.scrollFactor.set();		
+			case "psych":
 				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
 				scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();		
@@ -1679,6 +1703,8 @@ class PlayState extends MusicBeatState
 				scoreTxt.text = "Score:" + songScore;
 			case "simple":
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
+			case "psych":
+				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Rating:" + Ratings.GenerateLetterRank(accuracy) + " (" + truncateFloat(accuracy, 2) + "%) - " + ratingFC;
 			default:
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
 		}
@@ -1692,6 +1718,17 @@ class PlayState extends MusicBeatState
 			PlayerSettings.menuControls();
 
 			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+		}
+
+		if (FlxG.keys.justPressed.SIX && startedCountdown && canPause)
+		{
+			persistentUpdate = false;
+			persistentDraw = true;
+			paused = true;
+	
+			PlayerSettings.menuControls();
+	
+			openSubState(new EpicGamerChanges(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
 
 		if (FlxG.keys.justPressed.SEVEN)
@@ -1946,8 +1983,12 @@ class PlayState extends MusicBeatState
 			//MOVE NOTE TRANSPARENCY CODE BECAUSE REASONS 
 			if(daNote.tooLate){
 				if (daNote.alpha > 0.3){
-					noteMiss(daNote.noteData, 0.055, false, true);
-					//vocals.volume = 0;
+					if (!daNote.isSustainNote)
+						noteMiss(daNote.noteData, 0.055, false, true);
+					if (dad.animation.curAnim.name.startsWith('sing'))
+						vocals.volume = 1;
+					else
+						vocals.volume = 0;
 					daNote.alpha = 0.3;
 				}
 			}
@@ -2129,7 +2170,9 @@ class PlayState extends MusicBeatState
 
 		if (noteDiff > Conductor.safeZoneOffset * Conductor.shitZone)
 			{
+				shits += 1;
 				daRating = 'shit';
+				scoreTxt.color = FlxColor.RED;
 				if(Config.accuracy == "complex") {
 					totalNotesHit += 1 - Conductor.shitZone;
 				}
@@ -2137,10 +2180,13 @@ class PlayState extends MusicBeatState
 					totalNotesHit += 1;
 				}
 				score = 50;
+				health += 0.0015 * Config.healthMultiplier;
 			}
 		else if (noteDiff > Conductor.safeZoneOffset * Conductor.badZone)
 			{
+				bads += 1;
 				daRating = 'bad';
+				scoreTxt.color = FlxColor.ORANGE;
 				score = 100;
 				if(Config.accuracy == "complex") {
 					totalNotesHit += 1 - Conductor.badZone;
@@ -2148,10 +2194,13 @@ class PlayState extends MusicBeatState
 				else {
 					totalNotesHit += 1;
 				}
+				health += 0.0015 * Config.healthMultiplier;
 			}
 		else if (noteDiff > Conductor.safeZoneOffset * Conductor.goodZone)
 			{
+				goods += 1;
 				daRating = 'good';
+				scoreTxt.color = FlxColor.LIME;
 				if(Config.accuracy == "complex") {
 					totalNotesHit += 1 - Conductor.goodZone;
 				}
@@ -2159,9 +2208,16 @@ class PlayState extends MusicBeatState
 					totalNotesHit += 1;
 				}
 				score = 200;
+				health += 0.015 * Config.healthMultiplier;		
 			}
 		if (daRating == 'sick')
+		{
+			sicks += 1;
+			scoreTxt.color = FlxColor.CYAN;
 			totalNotesHit += 1;
+			health += 0.015 * Config.healthMultiplier;			
+		}
+
 	
 		//trace('hit ' + daRating);
 
@@ -2406,7 +2462,10 @@ class PlayState extends MusicBeatState
 						case 0:
 							if(leftRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								//vocals.volume = 0;
+								if (dad.animation.curAnim.name.startsWith('sing'))
+									vocals.volume = 1;
+								else
+									vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2415,7 +2474,10 @@ class PlayState extends MusicBeatState
 						case 1:
 							if(downRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								//vocals.volume = 0;
+								if (dad.animation.curAnim.name.startsWith('sing'))
+									vocals.volume = 1;
+								else
+									vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2424,7 +2486,10 @@ class PlayState extends MusicBeatState
 						case 2:
 							if(upRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								//vocals.volume = 0;
+								if (dad.animation.curAnim.name.startsWith('sing'))
+									vocals.volume = 1;
+								else
+									vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2433,7 +2498,10 @@ class PlayState extends MusicBeatState
 						case 3:
 							if(rightRelease){
 								noteMissWrongPress(daNote.noteData, 0.0475, true);
-								//vocals.volume = 0;
+								if (dad.animation.curAnim.name.startsWith('sing'))
+									vocals.volume = 1;
+								else
+									vocals.volume = 0;
 								daNote.tooLate = true;
 								daNote.destroy();
 								boyfriend.holdTimer = 0;
@@ -2557,7 +2625,9 @@ class PlayState extends MusicBeatState
 				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
 			else
 				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
+
 			health -= healthLoss * Config.healthDrainMultiplier;
+
 			if (combo > minCombo)
 			{
 				gf.playAnim('sad');
@@ -2571,7 +2641,6 @@ class PlayState extends MusicBeatState
 			if(playAudio){
 				FlxG.sound.play(Paths.sound('missnote' + FlxG.random.int(1, 3)), FlxG.random.float(0.1, 0.2));
 			}
-
 			setBoyfriendInvuln(5 / 60);
 
 			if(boyfriend.canAutoAnim){
@@ -2587,11 +2656,11 @@ class PlayState extends MusicBeatState
 						boyfriend.playAnim('singLEFTmiss', true);
 				}
 			}
-
+			scoreTxt.color = FlxColor.RED;
 			updateAccuracy();
 		}
 
-		if(Main.flippymode) { System.exit(0); }
+		if(Main.flippymode) { health = 0; }
 
 	}
 
@@ -2691,10 +2760,14 @@ class PlayState extends MusicBeatState
 
 		//Guitar Hero Styled Hold Notes
 		if(note.isSustainNote && !note.prevNote.wasGoodHit){
-			noteMiss(note.noteData, 0.05, true, true);
+			if (!note.isSustainNote)
+				noteMiss(note.noteData, 0.05, true, true);
 			note.prevNote.tooLate = true;
 			note.prevNote.destroy();
-			//vocals.volume = 0;
+			if (dad.animation.curAnim.name.startsWith('sing'))
+				vocals.volume = 1;
+			else
+				vocals.volume = 0;
 		}
 
 		else if (!note.wasGoodHit)
@@ -2707,12 +2780,12 @@ class PlayState extends MusicBeatState
 			else
 				totalNotesHit += 1;
 
-			if (note.noteData >= 0){
+			/*if (note.noteData >= 0){
 				health += 0.015 * Config.healthMultiplier;
 			}
 			else{
 				health += 0.0015 * Config.healthMultiplier;
-			}
+			}*/
 				
 			if(boyfriend.canAutoAnim){
 				switch (note.noteData)
@@ -2731,7 +2804,14 @@ class PlayState extends MusicBeatState
 			if(!note.isSustainNote){
 				setBoyfriendInvuln(2.5 / 60);
 			}
-			
+
+			// Rating FC
+			ratingFC = "";
+			if (sicks > 0) ratingFC = "SFC";
+			if (goods > 0) ratingFC = "GFC";
+			if (bads > 0 || shits > 0) ratingFC = "FC";
+			if (misses > 0 && misses < 10) ratingFC = "SDCB";
+			else if (misses >= 10) ratingFC = "Clear";
 
 			playerStrums.forEach(function(spr:FlxSprite)
 			{
@@ -2998,7 +3078,42 @@ class PlayState extends MusicBeatState
 				}
 				
 		}
-
+		/*public function RecalculateRating(badHit:Bool = false) {
+				if(totalPlayed < 1) //Prevent divide by 0
+					ratingName = '?';
+				else
+				{
+					// Rating Percent
+					ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
+					//trace((totalNotesHit / totalPlayed) + ', Total: ' + totalPlayed + ', notes hit: ' + totalNotesHit);
+	
+					// Rating Name
+					if(ratingPercent >= 1)
+					{
+						ratingName = ratingStuff[ratingStuff.length-1][0]; //Uses last string
+					}
+					else
+					{
+						for (i in 0...ratingStuff.length-1)
+						{
+							if(ratingPercent < ratingStuff[i][1])
+							{
+								ratingName = ratingStuff[i][0];
+								break;
+							}
+						}
+					}
+				}
+	
+				// Rating FC
+				ratingFC = "N/A";
+				if (sicks > 0) ratingFC = "SFC";
+				if (goods > 0) ratingFC = "GFC";
+				if (bads > 0 || shits > 0) ratingFC = "FC";
+				if (misses > 0 && misses < 10) ratingFC = "SDCB";
+				else if (misses >= 10) ratingFC = "Clear";
+			//updateScore(badHit); // score will only update after rating is calculated, if it's a badHit, it shouldn't bounce -Ghost
+		}*/
 		
 	}
 

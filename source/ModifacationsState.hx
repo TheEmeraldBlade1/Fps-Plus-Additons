@@ -16,14 +16,14 @@ import flixel.text.FlxText;
 
 using StringTools;
 
-class MainMenuState extends MusicBeatState
+class ModifacationsState extends MusicBeatState
 {
 	
 	var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	
-	var optionShit:Array<String> = ['story mode', 'freeplay', "mod"];
+	var optionShit:Array<String> = ['options'];
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -34,7 +34,7 @@ class MainMenuState extends MusicBeatState
 	override function create()
 	{
 
-		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Main Menu";
+		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Mod Menu";
 		openfl.Lib.current.stage.frameRate = 144;
 
 		if (!FlxG.sound.music.playing)
@@ -75,7 +75,7 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...optionShit.length)
 		{
-			var menuItem:FlxSprite = new FlxSprite(0, 100 + (i * 200));
+			var menuItem:FlxSprite = new FlxSprite(0, 190 + (i * 200));
 			if(optionShit[i] == "mod") {
 				menuItem.frames = texMod;
 			}
@@ -87,14 +87,10 @@ class MainMenuState extends MusicBeatState
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');
 			menuItem.ID = i;
-			//menuItem.screenCenter(X);
+			menuItem.screenCenter(X);
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
-			if (optionShit[i] == 'story mode' || optionShit[i] == 'freeplay' || optionShit[i] == 'mod')
-				{
-					menuItem.y -= 10;
-				}
 		}
 
 		FlxG.camera.follow(camFollow, null, 0.004);
@@ -155,7 +151,7 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.BACK)
 			{
-				switchState(new TitleScreen());
+				switchState(new MainMenuState());
 			}
 
 			if (controls.ACCEPT)
@@ -181,6 +177,8 @@ class MainMenuState extends MusicBeatState
 						case 'freeplay':
 							FlxG.sound.music.stop();
 						case 'options':
+							FlxG.sound.music.stop();
+						case 'mod':
 							FlxG.sound.music.stop();
 					}
 
@@ -219,8 +217,8 @@ class MainMenuState extends MusicBeatState
 										switchState(new ConfigMenu());
 										trace("options time");
 									case 'mod':
-										switchState(new ModifacationsState());
-										trace("ModsTime time");
+										switchState(new ConfigMenu());
+										trace("options time");
 								}
 							});
 						}
