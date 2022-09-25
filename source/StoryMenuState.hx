@@ -1,5 +1,7 @@
 package;
-
+#if desktop
+import Discord.DiscordClient;
+#end
 import title.*;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -20,6 +22,7 @@ class StoryMenuState extends MusicBeatState
 	var scoreText:FlxText;
 
 	public static var weekData:Array<Dynamic>;
+	public static var weekText:Array<Dynamic>;
 	var curDifficulty:Int = 1;
 
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true, true, true, true, true, true, true, true];
@@ -48,6 +51,10 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Story Menu", null);
+		#end
 		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Story";
 		openfl.Lib.current.stage.frameRate = 144;
 	
@@ -58,6 +65,16 @@ class StoryMenuState extends MusicBeatState
 			['Pico', 'Philly', "Blammed"],
 			['Satin-Panties', "High", "Milf"],
 			['Cocoa', 'Eggnog', 'Winter-Horrorland'],
+			['Senpai', 'Roses', 'Thorns']
+		];
+
+		weekText = [
+			['Tutorial'],
+			['Bopeebo', 'Fresh', 'Dadbattle'],
+			['Spookeez', 'South', 'Monster'],
+			['Pico', 'Philly', "Blammed"],
+			['Satin Panties', "High", "Milf"],
+			['Cocoa', 'Eggnog', 'Winter Horrorland'],
 			['Senpai', 'Roses', 'Thorns']
 		];
 		
@@ -402,7 +419,7 @@ class StoryMenuState extends MusicBeatState
 		grpWeekCharacters.members[0].animation.play(weekCharacters[curWeek][0]);
 		grpWeekCharacters.members[1].animation.play(weekCharacters[curWeek][1]);
 		grpWeekCharacters.members[2].animation.play(weekCharacters[curWeek][2]);
-		txtTracklist.text = "Tracks\n";
+		txtTracklist.text = "Tracks";
 
 		switch (grpWeekCharacters.members[0].animation.curAnim.name)
 		{
@@ -428,7 +445,7 @@ class StoryMenuState extends MusicBeatState
 				// grpWeekCharacters.members[0].updateHitbox();
 		}
 
-		var stringThing:Array<String> = weekData[curWeek];
+		var stringThing:Array<String> = weekText[curWeek];
 
 		for (i in stringThing)
 		{

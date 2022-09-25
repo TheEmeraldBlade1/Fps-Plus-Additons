@@ -1,7 +1,12 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
+
 import config.*;
 
+import flash.system.System;
 import title.TitleScreen;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -13,6 +18,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.text.FlxText;
+import sys.io.File;
 
 using StringTools;
 
@@ -23,7 +29,7 @@ class ModifacationsState extends MusicBeatState
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	
-	var optionShit:Array<String> = ['options'];
+	var optionShit:Array<String> = ['options','mods'];
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -33,7 +39,10 @@ class ModifacationsState extends MusicBeatState
 
 	override function create()
 	{
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Mod Menu", null);
+		#end
 		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Mod Menu";
 		openfl.Lib.current.stage.frameRate = 144;
 
@@ -56,7 +65,7 @@ class ModifacationsState extends MusicBeatState
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
 	
-		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBGMagenta'));
+		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		magenta.scrollFactor.x = 0;
 		magenta.scrollFactor.y = 0.18;
 		magenta.setGraphicSize(Std.int(magenta.width * 1.18));
@@ -71,12 +80,12 @@ class ModifacationsState extends MusicBeatState
 		add(menuItems);
 
 		var tex = Paths.getSparrowAtlas('FNF_main_menu_assets');
-		var texMod = Paths.getSparrowAtlas('FNF_mod_menu_assets');
+		var texMod = Paths.getSparrowAtlas('menu_mods');
 
 		for (i in 0...optionShit.length)
 		{
 			var menuItem:FlxSprite = new FlxSprite(0, 190 + (i * 200));
-			if(optionShit[i] == "mod") {
+			if(optionShit[i] == "mods") {
 				menuItem.frames = texMod;
 			}
 			else {
@@ -216,9 +225,9 @@ class ModifacationsState extends MusicBeatState
 									case 'options':
 										switchState(new ConfigMenu());
 										trace("options time");
-									case 'mod':
-										switchState(new ConfigMenu());
-										trace("options time");
+									case 'mods':
+										switchState(new ModifacationsState());
+										trace("ModsTime time");
 								}
 							});
 						}

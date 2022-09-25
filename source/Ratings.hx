@@ -4,7 +4,7 @@ class Ratings
 {
 	public static function GenerateLetterRank(accuracy:Float) // generate a letter ranking
 	{
-		var ranking:String = "N/A";
+		var ranking:String = "?";
 
 		if (PlayState.misses == 0 && PlayState.bads == 0 && PlayState.shits == 0 && PlayState.goods == 0) // Marvelous (SICK) Full Combo
 			ranking = "";
@@ -83,7 +83,7 @@ class Ratings
 		}
 
 		if (accuracy == 0)
-			ranking = "N/A";
+			ranking = "?";
 
 		return ranking;
 	}

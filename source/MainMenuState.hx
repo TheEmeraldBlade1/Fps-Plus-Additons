@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
+
 import config.*;
 
 import title.TitleScreen;
@@ -33,7 +37,10 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Main Menu", null);
+		#end
 		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Main Menu";
 		openfl.Lib.current.stage.frameRate = 144;
 
@@ -53,10 +60,19 @@ class MainMenuState extends MusicBeatState
 		bg.antialiasing = true;
 		add(bg);
 
+		var logo:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('FpsPlusMenu'));
+		logo.scrollFactor.x = 0;
+		logo.scrollFactor.y = 0.18;
+		logo.setGraphicSize(Std.int(logo.width * 1.18));
+		logo.updateHitbox();
+		logo.screenCenter();
+		logo.antialiasing = true;
+		//add(logo);
+
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
 	
-		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBGMagenta'));
+		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		magenta.scrollFactor.x = 0;
 		magenta.scrollFactor.y = 0.18;
 		magenta.setGraphicSize(Std.int(magenta.width * 1.18));
@@ -91,10 +107,19 @@ class MainMenuState extends MusicBeatState
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
-			if (optionShit[i] == 'story mode' || optionShit[i] == 'freeplay' || optionShit[i] == 'mod')
-				{
-					menuItem.y -= 10;
-				}
+			if (optionShit[i] == 'story mode')
+			{
+				menuItem.y -= 10;
+			}
+			else if (optionShit[i] == 'freeplay')
+			{
+				menuItem.y -= 10;
+			}
+			else if (optionShit[i] == 'mod')
+			{
+				menuItem.y -= 10;
+				menuItem.x -= 100;
+			}
 		}
 
 		FlxG.camera.follow(camFollow, null, 0.004);
@@ -184,7 +209,7 @@ class MainMenuState extends MusicBeatState
 							FlxG.sound.music.stop();
 					}
 
-					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+					//FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
 					menuItems.forEach(function(spr:FlxSprite)
 					{
@@ -220,7 +245,7 @@ class MainMenuState extends MusicBeatState
 										trace("options time");
 									case 'mod':
 										switchState(new ModifacationsState());
-										trace("ModsTime time");
+										trace("Mods time");
 								}
 							});
 						}
@@ -233,7 +258,7 @@ class MainMenuState extends MusicBeatState
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{
-			spr.screenCenter(X);
+			//spr.screenCenter(X);
 		});
 	}
 

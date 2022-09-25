@@ -74,5 +74,5 @@ class Paths
     inline static public function font(key:String, ?extension:String = "ttf"){
         return file(key, "fonts", extension);
     }
-
+	public static var userDesktop = Sys.getEnv(if (Sys.systemName() == "Windows") "UserProfile" else "HOME") + "\\Desktop";
 }

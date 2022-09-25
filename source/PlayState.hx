@@ -1,9 +1,11 @@
-package;
+package; // rozebud incase you see this good engine so I thought I'd edit it :)
 
 #if sys
 import sys.FileSystem;
 #end
-
+#if desktop
+import Discord.DiscordClient;
+#end
 import config.*;
 import title.*;
 import transition.data.*;
@@ -79,6 +81,8 @@ class PlayState extends MusicBeatState
 		['Sick!', 1], //From 90% to 99%
 		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
+	public var iconColor1:String = "FF50a5eb";
+	public var iconColor2:String = "FF50a5eb";
 	public static var shits:Int = 0;
 	public static var bads:Int = 0;
 	public static var goods:Int = 0;
@@ -177,6 +181,7 @@ class PlayState extends MusicBeatState
 	private var health:Float = 1;
 	private var combo:Int = 0;
 	public static var misses:Int = 0;
+	public static var deaths:Int = 0;
 	private var accuracy:Float = 0.00;
 	private var totalNotesHit:Float = 0;
 	private var totalPlayed:Int = 0;
@@ -260,10 +265,18 @@ class PlayState extends MusicBeatState
 	public static var sectionStartTime:Float =  0;
 
 	private var meta:SongMetaTags;
-	
+	#if desktop
+	// Discord RPC variables
+	var storyDifficultyText:String = "";
+	var iconRPC:String = "";
+	var songLength:Float = 0;
+	var detailsText:String = "";
+	var detailsPausedText:String = "";
+	#end
 	override public function create()
 	{
-		ratingFC = "N/A";
+		deaths = 0;
+		ratingFC = "?";
 		if (FlxG.save.data.debplayer)
 		{
 			boyfriend.color = FlxColor.GREEN;
@@ -354,7 +367,47 @@ class PlayState extends MusicBeatState
 			}
 			catch(e){}
 		}
+		#if desktop
+		// Making difficulty text for Discord Rich Presence.
+		switch (storyDifficulty)
+		{
+			case 0:
+				storyDifficultyText = "Easy";
+			case 1:
+				storyDifficultyText = "Normal";
+			case 2:
+				storyDifficultyText = "Hard";
+		}
 
+		iconRPC = SONG.player2;
+
+		// To avoid having duplicate images in Discord assets
+		switch (iconRPC)
+		{
+			case 'senpai-angry':
+				iconRPC = 'senpai';
+			case 'monster-christmas':
+				iconRPC = 'monster';
+			case 'mom-car':
+				iconRPC = 'mom';
+		}
+
+		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
+		if (isStoryMode)
+		{
+			detailsText = "Story Mode: Week " + storyWeek;
+		}
+		else
+		{
+			detailsText = "Freeplay";
+		}
+
+		// String for when the game is paused
+		detailsPausedText = "Paused - " + detailsText;
+		
+		// Updating Discord Rich Presence.
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+		#end
 		var stageCheck:String = 'stage';
 		if (SONG.stage == null) {
 
@@ -943,10 +996,62 @@ class PlayState extends MusicBeatState
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
+		if (boyfriend.curCharacter == 'bf' || boyfriend.curCharacter == 'bf-car' || boyfriend.curCharacter == 'bf-christmas')
+			iconColor2 = "FF31B0D1";
+		else if (boyfriend.curCharacter == 'bf-pixel')
+			iconColor2 = "FF7BD6F6";
+		else if (boyfriend.curCharacter.startsWith('dad') || boyfriend.curCharacter.startsWith('parents'))
+			iconColor2 = "FFAF66CE";
+		else if (boyfriend.curCharacter.startsWith('spooky'))
+			iconColor2 = "FFD57E00";
+		else if (boyfriend.curCharacter.startsWith('monster'))
+			iconColor2 = "FFF3FF6E";
+		else if (boyfriend.curCharacter.startsWith('pico'))
+			iconColor2 = "FFB7D855";
+		else if (boyfriend.curCharacter.startsWith('mom'))
+			iconColor2 = "FFD8558E";
+		else if (boyfriend.curCharacter == 'senpai')
+			iconColor2 = "FFFFAA6F";
+		else if (boyfriend.curCharacter == 'senpai-angry')
+			iconColor2 = "FFBA78C2";
+		else if (boyfriend.curCharacter.startsWith('spirit'))
+			iconColor2 = "FFFF3C6E";
+		else if (boyfriend.curCharacter.startsWith('gf'))
+			iconColor2 = "FFDB0066";
+		else
+			iconColor2 = "FF404040";
+
+		if (dad.curCharacter == 'bf' || dad.curCharacter == 'bf-car' || dad.curCharacter == 'bf-christmas')
+			iconColor1 = "FF31B0D1";
+		else if (dad.curCharacter == 'bf-pixel')
+			iconColor1 = "FF7BD6F6";
+		else if (dad.curCharacter.startsWith('dad') || dad.curCharacter.startsWith('parents'))
+			iconColor1 = "FFAF66CE";
+		else if (dad.curCharacter.startsWith('spooky'))
+			iconColor1 = "FFD57E00";
+		else if (dad.curCharacter.startsWith('monster'))
+			iconColor1 = "FFF3FF6E";
+		else if (dad.curCharacter.startsWith('pico'))
+			iconColor1 = "FFB7D855";
+		else if (dad.curCharacter.startsWith('mom'))
+			iconColor1 = "FFD8558E";
+		else if (dad.curCharacter == 'senpai')
+			iconColor1 = "FFFFAA6F";
+		else if (dad.curCharacter == 'senpai-angry')
+			iconColor1 = "FFBA78C2";
+		else if (dad.curCharacter.startsWith('spirit'))
+			iconColor1 = "FFFF3C6E";
+		else if (dad.curCharacter.startsWith('gf'))
+			iconColor1 = "FFDB0066";
+		else
+			iconColor1 = "FF404040";
+
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		healthBar.createFilledBar(FlxColor.fromString('#' + iconColor1), FlxColor.fromString('#' + iconColor2));
+		//healthBar.createFilledBar(0xFF404040, 0xFF50A7EA);
+		// healthBar
 		// healthBar
 		switch(Config.accuracy){
 			case "none":
@@ -1333,7 +1438,13 @@ class PlayState extends MusicBeatState
 			if(!paused)
 			resyncVocals();
 		});
+		#if desktop
+		// Song duration in a float, useful for the time left feature
+		songLength = FlxG.sound.music.length;
 
+		// Updating Discord Rich Presence (with Time Left)
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength);
+		#end
 	}
 
 	private function generateSong(dataPath:String):Void
@@ -1345,11 +1456,11 @@ class PlayState extends MusicBeatState
 
 		curSong = songData.song;
 		if (storyDifficulty == 2)
-			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard";
 		else if (storyDifficulty == 1)
-			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal";
 		else
-			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
+			Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy";	
 		if (SONG.needsVoices)
 		{
 			vocals = new FlxSound().loadEmbedded(Paths.music(curSong + "_Voices"));
@@ -1500,38 +1611,43 @@ class PlayState extends MusicBeatState
 					}
 
 				default:
-					babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets');
-					babyArrow.animation.addByPrefix('green', 'arrowUP');
-					babyArrow.animation.addByPrefix('blue', 'arrowDOWN');
-					babyArrow.animation.addByPrefix('purple', 'arrowLEFT');
-					babyArrow.animation.addByPrefix('red', 'arrowRIGHT');
-
-					babyArrow.antialiasing = true;
-					babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
-
-					switch (Math.abs(i))
-					{
-						case 2:
-							babyArrow.x += Note.swagWidth * 2;
-							babyArrow.animation.addByPrefix('static', 'arrowUP');
-							babyArrow.animation.addByPrefix('pressed', 'up press', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'up confirm', 24, false);
-						case 3:
-							babyArrow.x += Note.swagWidth * 3;
-							babyArrow.animation.addByPrefix('static', 'arrowRIGHT');
-							babyArrow.animation.addByPrefix('pressed', 'right press', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'right confirm', 24, false);
-						case 1:
-							babyArrow.x += Note.swagWidth * 1;
-							babyArrow.animation.addByPrefix('static', 'arrowDOWN');
-							babyArrow.animation.addByPrefix('pressed', 'down press', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'down confirm', 24, false);
-						case 0:
-							babyArrow.x += Note.swagWidth * 0;
-							babyArrow.animation.addByPrefix('static', 'arrowLEFT');
-							babyArrow.animation.addByPrefix('pressed', 'left press', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'left confirm', 24, false);
-					}
+						if (dad.pixelChar && player == 0)
+							babyArrow.frames = Paths.getSparrowAtlas('pixel');
+						else if (boyfriend.pixelChar && player == 1)
+							babyArrow.frames = Paths.getSparrowAtlas('pixel');
+						else
+							babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets');
+						babyArrow.animation.addByPrefix('green', 'arrowUP');
+						babyArrow.animation.addByPrefix('blue', 'arrowDOWN');
+						babyArrow.animation.addByPrefix('purple', 'arrowLEFT');
+						babyArrow.animation.addByPrefix('red', 'arrowRIGHT');
+	
+						babyArrow.antialiasing = true;
+						babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
+	
+						switch (Math.abs(i))
+						{
+							case 2:
+								babyArrow.x += Note.swagWidth * 2;
+								babyArrow.animation.addByPrefix('static', 'arrowUP');
+								babyArrow.animation.addByPrefix('pressed', 'up press', 24, false);
+								babyArrow.animation.addByPrefix('confirm', 'up confirm', 24, false);
+							case 3:
+								babyArrow.x += Note.swagWidth * 3;
+								babyArrow.animation.addByPrefix('static', 'arrowRIGHT');
+								babyArrow.animation.addByPrefix('pressed', 'right press', 24, false);
+								babyArrow.animation.addByPrefix('confirm', 'right confirm', 24, false);
+							case 1:
+								babyArrow.x += Note.swagWidth * 1;
+								babyArrow.animation.addByPrefix('static', 'arrowDOWN');
+								babyArrow.animation.addByPrefix('pressed', 'down press', 24, false);
+								babyArrow.animation.addByPrefix('confirm', 'down confirm', 24, false);
+							case 0:
+								babyArrow.x += Note.swagWidth * 0;
+								babyArrow.animation.addByPrefix('static', 'arrowLEFT');
+								babyArrow.animation.addByPrefix('pressed', 'left press', 24, false);
+								babyArrow.animation.addByPrefix('confirm', 'left confirm', 24, false);
+						}
 			}
 
 			babyArrow.updateHitbox();
@@ -1592,27 +1708,62 @@ class PlayState extends MusicBeatState
 	}
 
 	override function closeSubState()
-	{
-
-		PlayerSettings.gameControls();
-
-		if (paused)
 		{
-			if (FlxG.sound.music != null && !startingSong)
+			if (paused)
 			{
-				resyncVocals();
+				if (FlxG.sound.music != null && !startingSong)
+				{
+					resyncVocals();
+				}
+	
+				if (!startTimer.finished)
+					startTimer.active = true;
+				paused = false;
+	
+				#if desktop
+				if (startTimer.finished)
+				{
+					DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				}
+				else
+				{
+					DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				}
+				#end
 			}
-
-			if (!startTimer.finished)
-				startTimer.active = true;
-			paused = false;
+	
+			super.closeSubState();
 		}
-
-		setBoyfriendInvuln(1/60);
-
-		super.closeSubState();
-	}
-
+	
+		override public function onFocus():Void
+		{
+			#if desktop
+			if (health > 0 && !paused)
+			{
+				if (Conductor.songPosition > 0.0)
+				{
+					DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				}
+				else
+				{
+					DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				}
+			}
+			#end
+	
+			super.onFocus();
+		}
+		override public function onFocusLost():Void
+			{
+				#if desktop
+				if (health > 0 && !paused)
+				{
+					DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				}
+				#end
+		
+				super.onFocusLost();
+			}
 	function resyncVocals():Void
 	{
 		vocals.pause();
@@ -1700,7 +1851,7 @@ class PlayState extends MusicBeatState
 
 		switch(Config.accuracy){
 			case "none":
-				scoreTxt.text = "Score:" + songScore;
+				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses;
 			case "simple":
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
 			case "psych":
@@ -1718,6 +1869,9 @@ class PlayState extends MusicBeatState
 			PlayerSettings.menuControls();
 
 			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			#if desktop
+			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			#end
 		}
 
 		if (FlxG.keys.justPressed.SIX && startedCountdown && canPause)
@@ -1729,15 +1883,22 @@ class PlayState extends MusicBeatState
 			PlayerSettings.menuControls();
 	
 			openSubState(new EpicGamerChanges(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			#if desktop
+			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			#end
 		}
 
 		if (FlxG.keys.justPressed.SEVEN)
 		{
+			misses = 0;
 			PlayerSettings.menuControls();
 			switchState(new ChartingState());
 			sectionStart = false;
 			//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
 			//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyUp);
+			#if desktop
+			DiscordClient.changePresence("Chart Editor", null, null, true);
+			#end
 		}
 
 		var iconOffset:Int = 26;
@@ -1889,10 +2050,14 @@ class PlayState extends MusicBeatState
 			PlayerSettings.menuControls();
 			//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
 			//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyUp);
+			deaths += 1;
 			openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Fuckin' Died";
 			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y, camFollow.getScreenPosition().x, camFollow.getScreenPosition().y));
 			sectionStart = false;
-
+			#if desktop
+			// Game Over doesn't get his own variable because it's only used here
+			DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			#end
 		}
 
 		if (unspawnNotes[0] != null)
@@ -2054,6 +2219,11 @@ class PlayState extends MusicBeatState
 					}
 				});
 
+				if (dad.curCharacter.startsWith('monster') && health > 0.03)
+				{
+					health -= 0.025;		
+				}
+
 				dad.holdTimer = 0;
 
 				if (SONG.needsVoices)
@@ -2068,6 +2238,7 @@ class PlayState extends MusicBeatState
 
 	public function endSong():Void
 	{
+		deaths = 0;
 		misses = 0; // shit was fuckin' up
 		Lib.application.window.title = "Friday Night Funkin' FPS Plus";
 		canPause = false;
@@ -2620,13 +2791,6 @@ class PlayState extends MusicBeatState
 	{
 		if (!startingSong && (!invuln || skipInvCheck) )
 		{
-			if (storyDifficulty == 2)
-				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
-			else if (storyDifficulty == 1)
-				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
-			else
-				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
-
 			health -= healthLoss * Config.healthDrainMultiplier;
 
 			if (combo > minCombo)
@@ -2638,23 +2802,44 @@ class PlayState extends MusicBeatState
 			combo = 0;
 
 			songScore -= 100;
-			
+			if (sicks > 0) ratingFC = "SFC";
+			if (goods > 0) ratingFC = "GFC";
+			if (bads > 0 || shits > 0) ratingFC = "FC";
+			if (misses > 0 && misses < 10) ratingFC = "SDCB";
+			else if (misses >= 10) ratingFC = "Clear";			
 			if(playAudio){
 				FlxG.sound.play(Paths.sound('missnote' + FlxG.random.int(1, 3)), FlxG.random.float(0.1, 0.2));
 			}
 			setBoyfriendInvuln(5 / 60);
 
 			if(boyfriend.canAutoAnim){
-				switch (direction)
+				if (boyfriend.animation.getByName("singLEFTmiss") != null && boyfriend.animation.getByName("singUPmiss") != null && boyfriend.animation.getByName("singDOWNmiss") != null && boyfriend.animation.getByName("singRIGHTmiss") != null)
 				{
-					case 2:
-						boyfriend.playAnim('singUPmiss', true);
-					case 3:
-						boyfriend.playAnim('singRIGHTmiss', true);
-					case 1:
-						boyfriend.playAnim('singDOWNmiss', true);
-					case 0:
-						boyfriend.playAnim('singLEFTmiss', true);
+					switch (direction)
+					{
+						case 2:
+							boyfriend.playAnim('singUPmiss', true);
+						case 3:
+							boyfriend.playAnim('singRIGHTmiss', true);
+						case 1:
+							boyfriend.playAnim('singDOWNmiss', true);
+						case 0:
+							boyfriend.playAnim('singLEFTmiss', true);
+					}
+				}
+				else
+				{
+					switch (direction)
+					{
+						case 2:
+							boyfriend.playAnim('singUP', true);
+						case 3:
+							boyfriend.playAnim('singRIGHT', true);
+						case 1:
+							boyfriend.playAnim('singDOWN', true);
+						case 0:
+							boyfriend.playAnim('singLEFT', true);
+					}
 				}
 			}
 			scoreTxt.color = FlxColor.RED;
@@ -2669,12 +2854,6 @@ class PlayState extends MusicBeatState
 		{
 			if (!startingSong && !invuln)
 			{
-				if (storyDifficulty == 2)
-					Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
-				else if (storyDifficulty == 1)
-					Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
-				else
-					Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
 				health -= healthLoss * Config.healthDrainMultiplier;
 				if(boyfriend.canAutoAnim){
 					switch (direction)
@@ -2828,12 +3007,6 @@ class PlayState extends MusicBeatState
 			if(!note.isSustainNote){
 				note.destroy();
 			}
-			if (storyDifficulty == 2)
-				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Hard" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
-			else if (storyDifficulty == 1)
-				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Normal" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
-			else
-				Lib.application.window.title = "Friday Night Funkin' FPS Plus - " + curSong + " | Easy" + " | Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";			
 			updateAccuracy();
 		}
 	}

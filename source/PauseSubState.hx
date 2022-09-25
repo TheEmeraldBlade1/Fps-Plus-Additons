@@ -92,23 +92,31 @@ class PauseSubState extends MusicBeatSubstate
 					unpause();
 					
 				case "Restart Song":
+					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					PlayState.deaths = 0;
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
 					FlxG.resetState();
 					PlayState.sectionStart = false;
 
 				case "Restart Section":
+					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					PlayState.deaths = 0;
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
 					FlxG.resetState();
 
 				case "Chart Editor":
+					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					PlayState.deaths = 0;
 					PlayerSettings.menuControls();
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
 					PlayState.instance.switchState(new ChartingState());
 					
 				case "Skip Song":
+					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					PlayState.deaths = 0;
 					PlayState.instance.endSong();
 					
 				case "Options":
@@ -166,6 +174,7 @@ class PauseSubState extends MusicBeatSubstate
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
 					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					PlayState.deaths = 0;
 					PlayState.sectionStart = false;
 					if (PlayState.isStoryMode)
 					{

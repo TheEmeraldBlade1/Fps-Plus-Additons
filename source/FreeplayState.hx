@@ -1,4 +1,7 @@
 package;
+#if desktop
+import Discord.DiscordClient;
+#end
 
 import flash.text.TextField;
 import flixel.FlxG;
@@ -33,6 +36,10 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Freeplay Menu", null);
+		#end
 		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Freeplay";
 		openfl.Lib.current.stage.frameRate = 144;
 		

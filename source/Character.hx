@@ -12,6 +12,7 @@ class Character extends FlxSprite
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
+	public var pixelChar:Bool = false;
 	public var curCharacter:String = 'bf';
 
 	public var holdTimer:Float = 0;
@@ -106,6 +107,7 @@ class Character extends FlxSprite
 				playAnim('danceRight');
 
 			case 'gf-pixel':
+				pixelChar = true;
 				frames = Paths.getSparrowAtlas("weeb/gfPixel");
 				animation.addByIndices('singUP', 'GF IDLE', [2], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF IDLE', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
@@ -198,10 +200,10 @@ class Character extends FlxSprite
 				animation.addByPrefix('singRIGHT', 'Monster Right note', 24, false);
 
 				addOffset('idle');
-				addOffset("singUP", -23, 87);
-				addOffset("singRIGHT", -51, 15);
-				addOffset("singLEFT", -31, 4);
-				addOffset("singDOWN", -63, -86);
+				addOffset("singUP", -21, 53);
+				addOffset("singRIGHT", -51, 10);
+				addOffset("singLEFT", -30, 7);
+				addOffset("singDOWN", -52, -91);
 				playAnim('idle');
 			case 'monster-christmas':
 				frames = Paths.getSparrowAtlas("christmas/monsterChristmas");
@@ -346,6 +348,7 @@ class Character extends FlxSprite
 
 				flipX = true;
 			case 'bf-pixel':
+				pixelChar = true;
 				frames = Paths.getSparrowAtlas("weeb/bfPixel");
 				animation.addByPrefix('idle', 'BF IDLE', 24, false);
 				animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);
@@ -397,6 +400,7 @@ class Character extends FlxSprite
 				flipX = true;
 
 			case 'senpai':
+				pixelChar = true;
 				frames = Paths.getSparrowAtlas("weeb/senpai");
 				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
 				animation.addByPrefix('singUP', 'SENPAI UP NOTE', 24, false);
@@ -417,6 +421,7 @@ class Character extends FlxSprite
 
 				antialiasing = false;
 			case 'senpai-angry':
+				pixelChar = true;
 				frames = Paths.getSparrowAtlas("weeb/senpai");
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
 				animation.addByPrefix('singUP', 'Angry Senpai UP NOTE', 24, false);
@@ -437,6 +442,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 			case 'spirit':
+				pixelChar = true;
 				frames = Paths.getPackerAtlas("weeb/spirit");
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
 				animation.addByPrefix('singUP', "up_", 24, false);

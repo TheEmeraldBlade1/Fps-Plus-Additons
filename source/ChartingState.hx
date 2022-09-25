@@ -977,17 +977,18 @@ class ChartingState extends MusicBeatState
 			if (FlxG.keys.pressed.CONTROL && FlxG.keys.pressed.SHIFT)
 				dummyArrow.y = Math.floor(FlxG.mouse.y / (GRID_SIZE / 4)) * (GRID_SIZE / 4);
 			else if (FlxG.keys.pressed.SHIFT)
-				dummyArrow.y = FlxG.mouse.y;
+				dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
 			else if (FlxG.keys.pressed.ALT)
 				dummyArrow.y = Math.floor(FlxG.mouse.y / (GRID_SIZE * 4/3)) * (GRID_SIZE * 4/3);
 			else if (FlxG.keys.pressed.CONTROL)
 				dummyArrow.y = Math.floor(FlxG.mouse.y / (GRID_SIZE / 2)) * (GRID_SIZE / 2);
 			else
-				dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
+				dummyArrow.y = FlxG.mouse.y;
 		}
 
 		if (FlxG.keys.justPressed.ENTER)
 		{
+			FlxG.mouse.visible = false;
 			PlayState.SONG = _song;
 			PlayState.EVENTS = _events;
 			FlxG.sound.music.stop();
