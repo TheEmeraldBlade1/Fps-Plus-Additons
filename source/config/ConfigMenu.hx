@@ -1,5 +1,8 @@
 package config;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import transition.data.*;
 import transition.*;
 
@@ -113,7 +116,10 @@ class ConfigMenu extends MusicBeatState
 
 	override function create()
 	{	
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Configing Options", null);
+		#end
 		openfl.Lib.application.window.title = "Friday Night Funkin' FPS Plus - Option";
 		openfl.Lib.current.stage.frameRate = 144;
 
