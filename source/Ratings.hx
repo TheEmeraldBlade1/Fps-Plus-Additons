@@ -46,37 +46,37 @@ class Ratings
 				switch (i)
 				{
 					case 0:
-						ranking += "AAAAA";
+						ranking += "Perfect!!";
 					case 1:
-						ranking += "AAAA:";
+						ranking += "Sick!";
 					case 2:
-						ranking += "AAAA.";
+						ranking += "Great";
 					case 3:
-						ranking += "AAAA";
+						ranking += "Good";
 					case 4:
-						ranking += "AAA:";
+						ranking += "Nice";
 					case 5:
-						ranking += "AAA.";
+						ranking += "Meh";
 					case 6:
-						ranking += "AAA";
+						ranking += "Ok";
 					case 7:
-						ranking += "AA:";
+						ranking += "Non Gamer";
 					case 8:
-						ranking += "AA.";
+						ranking += "Noob";
 					case 9:
-						ranking += "AA";
+						ranking += "Bruh";
 					case 10:
-						ranking += "A:";
+						ranking += "Bad";
 					case 11:
-						ranking += "A.";
+						ranking += "Shit";
 					case 12:
-						ranking += "A";
+						ranking += "Medium Shit!";
 					case 13:
-						ranking += "B";
+						ranking += "BIG SHIT!!";
 					case 14:
-						ranking += "C";
+						ranking += "MEGA SHIT!!!";
 					case 15:
-						ranking += "D";
+						ranking += "GIGA SHIT!!!!";
 				}
 				break;
 			}
