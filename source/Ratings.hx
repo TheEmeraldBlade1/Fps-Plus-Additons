@@ -20,22 +20,22 @@ class Ratings
 		// WIFE TIME :)))) (based on Wife3)
 
 		var wifeConditions:Array<Bool> = [
-			accuracy >= 99.9935, // AAAAA
-			accuracy >= 99.980, // AAAA:
-			accuracy >= 99.970, // AAAA.
-			accuracy >= 99.955, // AAAA
-			accuracy >= 99.90, // AAA:
-			accuracy >= 99, // AAA.
-			accuracy >= 89, // AAA
-			accuracy >= 79, // AA:
-			accuracy >= 69, // AA.
-			accuracy >= 59, // AA
-			accuracy >= 49, // A:
-			accuracy >= 39, // A.
-			accuracy >= 29, // A
-			accuracy >= 19, // B
-			accuracy >= 9, // C
-			accuracy < 10 // D
+			accuracy >= 99, // AAAAA
+			accuracy >= 75, // AAAA:
+			accuracy >= 70, // AAAA.
+			accuracy >= 65, // AAAA
+			accuracy >= 60, // AAA:
+			accuracy >= 55, // AAA.
+			accuracy >= 50, // AAA
+			accuracy >= 45, // AA:
+			accuracy >= 40, // AA.
+			accuracy >= 35, // AA
+			accuracy >= 30, // A:
+			accuracy >= 25, // A.
+			accuracy >= 20, // A
+			accuracy >= 15, // B
+			accuracy >= 10, // C
+			accuracy < 5 // D
 		];
 
 		for (i in 0...wifeConditions.length)
