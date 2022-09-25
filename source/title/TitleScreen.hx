@@ -1,5 +1,9 @@
 package title;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import openfl.system.System;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -35,6 +39,13 @@ class TitleScreen extends MusicBeatState
 
 	override public function create():Void
 	{
+		#if desktop
+		DiscordClient.initialize();
+		
+		Application.current.onExit.add (function (exitCode) {
+			DiscordClient.shutdown();
+		 });
+		#end
 		//Polymod.init({modRoot: "mods", dirs: ['introMod']});
 
 		// DEBUG BULLSHIT

@@ -1,9 +1,13 @@
 package title;
-
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.util.FlxColor;
 
+import lime.app.Application;
 using StringTools;
 
 class TitleVideo extends FlxState
@@ -14,7 +18,13 @@ class TitleVideo extends FlxState
 
 	override public function create():Void
 	{
-
+		#if desktop
+		DiscordClient.initialize();
+		
+		Application.current.onExit.add (function (exitCode) {
+			DiscordClient.shutdown();
+		 });
+		#end
 		super.create();
 
 		FlxG.sound.cache(Paths.music("klaskiiLoop"));

@@ -1,5 +1,8 @@
 package title;
-
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -39,6 +42,13 @@ class TitleIntroText extends MusicBeatState
 
 	override public function create():Void
 	{
+		#if desktop
+		DiscordClient.initialize();
+		
+		Application.current.onExit.add (function (exitCode) {
+			DiscordClient.shutdown();
+		 });
+		#end
 		useDefaultTransIn = false;
 		useDefaultTransOut = false;
 
