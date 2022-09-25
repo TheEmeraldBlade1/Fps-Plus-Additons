@@ -27,7 +27,6 @@ class Config
 		FlxG.save.data.healthDrainMultiplier = 1.0;
 		FlxG.save.data.comboType = 0;
 		FlxG.save.data.downscroll = false;
-		FlxG.save.data.HighSpeed = false;
 		FlxG.save.data.noteGlow = false;
 		FlxG.save.data.ghostTapType = 0;
 		FlxG.save.data.noFpsCap = true;
@@ -44,7 +43,6 @@ class Config
 		healthDrainMultiplier = FlxG.save.data.healthDrainMultiplier;
 		comboType = FlxG.save.data.comboType;
 		downscroll = FlxG.save.data.downscroll;
-		HighSpeed = FlxG.save.data.HighSpeed;
 		noteGlow = FlxG.save.data.noteGlow;
 		ghostTapType = FlxG.save.data.ghostTapType;
 		noFpsCap = FlxG.save.data.noFpsCap;
@@ -59,7 +57,6 @@ class Config
 								healthDrainMultiplierW:Float, 
 								comboTypeW:Int, 
 								downscrollW:Bool, 
-								HighSpeedW:Bool, 
 								noteGlowW:Bool,
 								ghostTapTypeW:Int,
 								noFpsCapW:Bool,
@@ -74,7 +71,6 @@ class Config
 		FlxG.save.data.healthDrainMultiplier = healthDrainMultiplierW;
 		FlxG.save.data.comboType = comboTypeW;
 		FlxG.save.data.downscroll = downscrollW;
-		FlxG.save.data.HighSpeed = HighSpeedW;
 		FlxG.save.data.noteGlow = noteGlowW;
 		FlxG.save.data.ghostTapType = ghostTapTypeW;
 		FlxG.save.data.noFpsCap = noFpsCapW;
@@ -101,8 +97,6 @@ class Config
 			FlxG.save.data.comboType = 0;
 		if(FlxG.save.data.downscroll == null)
 			FlxG.save.data.downscroll = false;
-		if(FlxG.save.data.HighSpeed == null)
-			FlxG.save.data.HighSpeed = false;
 		if(FlxG.save.data.noteGlow == null)
 			FlxG.save.data.noteGlow = false;
 		if(FlxG.save.data.ghostTapType == null)

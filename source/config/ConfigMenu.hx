@@ -27,7 +27,7 @@ class ConfigMenu extends MusicBeatState
 	var offsetValue:Float;
 	var accuracyType:String;
 	var accuracyTypeInt:Int;
-	var accuracyTypes:Array<String> = ["none", "simple", "complex"];
+	var accuracyTypes:Array<String> = ["none", "simple", "complex", "psych"];
 	var healthValue:Int;
 	var healthDrainValue:Int;
 	var comboValue:Int;
@@ -62,52 +62,50 @@ class ConfigMenu extends MusicBeatState
 									"BACKGROUND DIM",
 									"[CACHE SETTINGS]",
 									"CONTROLLER SCHEME",
-									"[EDIT KEY BINDS]",
-									"HIGH SCROLL SPEED"
+									"[EDIT KEY BINDS]"
 									];
 		
 	//Any descriptions that say TEMP are replaced with a changing description based on the current config setting.
 	final settingDesc:Array<String> = [
-									"\nAdjust note timings.\nPress \"ENTER\" to start the offset calibration." + (FlxG.save.data.ee1?"\nHold \"SHIFT\" to force the pixel calibration.\nHold \"CTRL\" to force the normal calibration.":""), 
-									"\nWhat type of accuracy calculation you want to use. Simple is just notes hit / total notes and fps plus rating system. Complex also factors in how early or late a note was.", 
-									#if desktop "\nUncaps the framerate during gameplay." #else "Disabled on Web builds." #end,
-									"\nTEMP",
-									"\nModifies how much Health you gain when hitting a note.",
-									"\nModifies how much Health you lose when missing a note.",
-									"\nMakes notes appear from the top instead the bottom.",
-									"\nMakes note arrows glow if they are able to be hit.",
-									"\nTEMP",
-									"\nAdjusts how dark the background is.\nIt is recommended that you use the HUD combo display with a high background dim.",
-									"\nChange what assets the game keeps cached.",
-									"\nTEMP",
-									"\nChange key binds.",
-									"\nForce songs to have high scroll speed"
+									"Adjust note timings.\nPress \"ENTER\" to start the offset calibration." + (FlxG.save.data.ee1?"\nHold \"SHIFT\" to force the pixel calibration.\nHold \"CTRL\" to force the normal calibration.":""), 
+									"What type of accuracy calculation you want to use. Simple is just notes hit / total notes and fps plus rating system. Complex also factors in how early or late a note was. / psych accuracy you already know", 
+									#if desktop "Uncaps the framerate during gameplay." #else "Disabled on Web builds." #end,
+									"TEMP",
+									"Modifies how much Health you gain when hitting a note.",
+									"Modifies how much Health you lose when missing a note.",
+									"Makes notes appear from the top instead the bottom.",
+									"Makes note arrows glow if they are able to be hit.",
+									"TEMP",
+									"Adjusts how dark the background is.\nIt is recommended that you use the HUD combo display with a high background dim.",
+									"Change what assets the game keeps cached.",
+									"TEMP",
+									"Change key binds."
 									];
 
 	final ghostTapDesc:Array<String> = [
-									"\nAny key press that isn't for a valid note will cause you to miss.", 
-									"\nYou can only  miss while you need to sing.", 
-									"\nYou cannot miss unless you do not hit a note.\n[Note that this makes the game very easy and can remove a lot of the challenge.]"
+									"Any key press that isn't for a valid note will cause you to miss.", 
+									"You can only  miss while you need to sing.", 
+									"You cannot miss unless you do not hit a note.\n[Note that this makes the game very easy and can remove a lot of the challenge.]"
 									];					
 
 	final comboDisplayDesc:Array<String> = [
-									"\nRatings and combo count are a part of the world and move around with the camera.", 
-									"\nRatings and combo count are a part of the hud and stay in a static position.", 
-									"\nRatings and combo count are hidden."
+									"Ratings and combo count are a part of the world and move around with the camera.", 
+									"Ratings and combo count are a part of the hud and stay in a static position.", 
+									"Ratings and combo count are hidden."
 									];
 
 	final controlSchemes:Array<String> = [
-									"\nDEFAULT", 
-									"\nALT 1", 
-									"\nALT 2",
-									"\n[CUSTOM]"
+									"DEFAULT", 
+									"ALT 1", 
+									"ALT 2",
+									"[CUSTOM]"
 									];
 
 	final controlSchemesDesc:Array<String> = [
-									"\nLEFT: DPAD LEFT / X (SQUARE) / LEFT TRIGGER\nDOWN: DPAD DOWN / X (CROSS) / LEFT BUMPER\nUP: DPAD UP / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: DPAD RIGHT / B (CIRCLE) / RIGHT TRIGGER", 
-									"\nLEFT: DPAD LEFT / DPAD DOWN / LEFT TRIGGER\nDOWN: DPAD UP / DPAD RIGHT / LEFT BUMPER\nUP: X (SQUARE) / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: A (CROSS) / B (CIRCLE) / RIGHT TRIGGER", 
-									"\nLEFT: ALL DPAD DIRECTIONS\nDOWN: LEFT BUMPER / LEFT TRIGGER\nUP: RIGHT BUMPER / RIGHT TRIGGER\nRIGHT: ALL FACE BUTTONS",
-									"\nPress A (CROSS) to change controller binds."
+									"LEFT: DPAD LEFT / X (SQUARE) / LEFT TRIGGER\nDOWN: DPAD DOWN / X (CROSS) / LEFT BUMPER\nUP: DPAD UP / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: DPAD RIGHT / B (CIRCLE) / RIGHT TRIGGER", 
+									"LEFT: DPAD LEFT / DPAD DOWN / LEFT TRIGGER\nDOWN: DPAD UP / DPAD RIGHT / LEFT BUMPER\nUP: X (SQUARE) / Y (TRIANGLE) / RIGHT BUMPER\nRIGHT: A (CROSS) / B (CIRCLE) / RIGHT TRIGGER", 
+									"LEFT: ALL DPAD DIRECTIONS\nDOWN: LEFT BUMPER / LEFT TRIGGER\nUP: RIGHT BUMPER / RIGHT TRIGGER\nRIGHT: ALL FACE BUTTONS",
+									"Press A (CROSS) to change controller binds."
 									];
 
 									
@@ -149,7 +147,6 @@ class ConfigMenu extends MusicBeatState
 		healthDrainValue = Std.int(Config.healthDrainMultiplier * 10);
 		comboValue = Config.comboType;
 		downValue = Config.downscroll;
-		scrollValue = Config.HighSpeed;
 		glowValue = Config.noteGlow;
 		randomTapValue = Config.ghostTapType;
 		noCapValue = Config.noFpsCap;
@@ -289,10 +286,10 @@ class ConfigMenu extends MusicBeatState
 								accuracyTypeInt -= 1;
 							}
 							
-							if (accuracyTypeInt > 2)
+							if (accuracyTypeInt > 3)
 								accuracyTypeInt = 0;
 							if (accuracyTypeInt < 0)
-								accuracyTypeInt = 2;
+								accuracyTypeInt = 3;
 								
 							accuracyType = accuracyTypes[accuracyTypeInt];
 					case 2: //FPS Cap
@@ -496,11 +493,6 @@ class ConfigMenu extends MusicBeatState
 							writeToConfig();
 							switchState(new KeyBindMenu());
 						}
-						case 13: //scroll speed high
-						if (controls.RIGHT_P || controls.LEFT_P || controls.ACCEPT) {
-							FlxG.sound.play(Paths.sound('scrollMenu'));
-							scrollValue = !scrollValue;
-						}
 					
 			}
 		}
@@ -624,7 +616,7 @@ class ConfigMenu extends MusicBeatState
 		FlxG.sound.music.stop();
 		FlxG.sound.play(Paths.sound('cancelMenu'));
 		switchState(Type.createInstance(exitTo, []));
-		exitTo = null;
+		exitTo = ModifacationsState;
 	}
 
 	function secretPresetTest(_combo:Array<String>):Void{
@@ -651,7 +643,7 @@ class ConfigMenu extends MusicBeatState
 	}
 
 	function writeToConfig(){
-		Config.write(offsetValue, accuracyType, healthValue / 10.0, healthDrainValue / 10.0, comboValue, downValue, scrollValue, glowValue, randomTapValue, noCapValue, scheme, dimValue);
+		Config.write(offsetValue, accuracyType, healthValue / 10.0, healthDrainValue / 10.0, comboValue, downValue, glowValue, randomTapValue, noCapValue, scheme, dimValue);
 	}
 
 }
