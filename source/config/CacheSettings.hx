@@ -1,5 +1,8 @@
 package config;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import transition.data.*;
 
 import flixel.FlxState;
@@ -32,7 +35,10 @@ class CacheSettings extends MusicBeatState
 
 	override function create()
 	{
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Configing Preload Settings", null);
+		#end
         var bgColor:FlxColor = 0xFF9766BE;
         var font:String = Paths.font("Funkin-Bold", "otf");
 

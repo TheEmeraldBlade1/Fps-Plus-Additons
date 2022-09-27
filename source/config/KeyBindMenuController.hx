@@ -1,5 +1,8 @@
 package config;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import transition.data.*;
 
 import flixel.input.gamepad.FlxGamepad;
@@ -36,7 +39,10 @@ class KeyBindMenuController extends MusicBeatState
 
 	override function create()
 	{	
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Configing Keybinds (Controller)", null);
+		#end
         for(i in 0...42){
             allowedKeys[i] = i;
         }
@@ -73,7 +79,7 @@ class KeyBindMenuController extends MusicBeatState
         keyWarning.alpha = 0;
         add(keyWarning);
 
-        var backText = new FlxText(5, FlxG.height - 37, 0, "ESCAPE - Back to Menu\nBACKSPACE - Reset to Defaults\n", 16);
+        var backText = new FlxText(5, FlxG.height - 37, 0, "ESCAPE - Back to Menu\nRESET KEY - Reset to Defaults\n", 16);
 		backText.scrollFactor.set();
 		backText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
         add(backText);

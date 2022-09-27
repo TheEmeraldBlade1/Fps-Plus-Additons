@@ -30,7 +30,7 @@ class ConfigMenu extends MusicBeatState
 	var offsetValue:Float;
 	var accuracyType:String;
 	var accuracyTypeInt:Int;
-	var accuracyTypes:Array<String> = ["none", "simple", "complex", "psych"];
+	var accuracyTypes:Array<String> = ["none", "none-misses", "simple", "complex", "psych", "psych-kade", "kade", "kade-nps"];
 	var healthValue:Int;
 	var healthDrainValue:Int;
 	var comboValue:Int;
@@ -54,7 +54,7 @@ class ConfigMenu extends MusicBeatState
 	
 	final settingText:Array<String> = [
 									"NOTE OFFSET", 
-									"ACCURACY DISPLAY", 
+									"RATING SYSTEM", 
 									"UNCAPPED FRAMERATE",
 									"NEW INPUT WHEN?",
 									"HP GAIN MULTIPLIER",
@@ -292,10 +292,10 @@ class ConfigMenu extends MusicBeatState
 								accuracyTypeInt -= 1;
 							}
 							
-							if (accuracyTypeInt > 3)
+							if (accuracyTypeInt > 7)
 								accuracyTypeInt = 0;
 							if (accuracyTypeInt < 0)
-								accuracyTypeInt = 3;
+								accuracyTypeInt = 7;
 								
 							accuracyType = accuracyTypes[accuracyTypeInt];
 					case 2: //FPS Cap

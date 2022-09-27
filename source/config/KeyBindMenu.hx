@@ -1,5 +1,8 @@
 package config;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import transition.data.*;
 
 import flixel.FlxG;
@@ -35,7 +38,10 @@ class KeyBindMenu extends MusicBeatState
 
 	override function create()
 	{
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Configing Keybinds", null);
+		#end
 		persistentUpdate = persistentDraw = true;
 
 		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
@@ -64,7 +70,7 @@ class KeyBindMenu extends MusicBeatState
         keyWarning.alpha = 0;
         add(keyWarning);
 
-        var backText = new FlxText(5, FlxG.height - 37, 0, "ESCAPE - Back to Menu\nBACKSPACE - Reset to Defaults\n", 16);
+        var backText = new FlxText(5, FlxG.height - 37, 0, "ESCAPE - Back to Menu\nR - Reset to Defaults\n", 16);
 		backText.scrollFactor.set();
 		backText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
         add(backText);
@@ -105,7 +111,7 @@ class KeyBindMenu extends MusicBeatState
                     FlxG.sound.play(Paths.sound('cancelMenu'));
                     quit();
                 }
-				else if (FlxG.keys.justPressed.BACKSPACE){
+				else if (FlxG.keys.justPressed.R){
                     FlxG.sound.play(Paths.sound('cancelMenu'));
                     reset();
                 }

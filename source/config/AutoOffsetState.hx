@@ -1,5 +1,8 @@
 package config;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import transition.data.*;
 
 import flixel.FlxG;
@@ -37,7 +40,10 @@ class AutoOffsetState extends MusicBeatState
 	var speakers:FlxSprite = new FlxSprite(0, 0);
 
 	override function create() {	
-	
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Changing Note Offset", null);
+		#end
 		//Setup Conductor
 		Conductor.changeBPM(100);
 		Conductor.songPosition = 0;
