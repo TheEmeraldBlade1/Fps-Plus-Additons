@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lilOpp.png">
+	<!-- Created with Adobe Animate version 21.0.4.39603 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="down0000" x="354" y="0" width="140" height="149"/>
+	<SubTexture name="down0001" x="354" y="149" width="140" height="149"/>
+	<SubTexture name="down0002" x="494" y="0" width="140" height="149"/>
+	<SubTexture name="idle0000" x="494" y="149" width="140" height="149"/>
+	<SubTexture name="idle0001" x="634" y="0" width="140" height="149"/>
+	<SubTexture name="left0000" x="634" y="149" width="140" height="149"/>
+	<SubTexture name="left0001" x="774" y="0" width="140" height="149"/>
+	<SubTexture name="left0002" x="774" y="149" width="140" height="149"/>
+	<SubTexture name="right0000" x="0" y="298" width="140" height="149"/>
+	<SubTexture name="right0001" x="140" y="298" width="140" height="149"/>
+	<SubTexture name="right0002" x="280" y="298" width="140" height="149"/>
+	<SubTexture name="unusedframes0000" x="0" y="0" width="354" height="298"/>
+	<SubTexture name="up0000" x="420" y="298" width="140" height="149"/>
+	<SubTexture name="up0001" x="560" y="298" width="140" height="149"/>
+	<SubTexture name="up0002" x="700" y="298" width="140" height="149"/>
+</TextureAtlas>
