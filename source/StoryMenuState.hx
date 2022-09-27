@@ -19,6 +19,15 @@ using StringTools;
 
 class StoryMenuState extends MusicBeatState
 {
+	public static var weekDataOrig:Array<String> = [
+		'tutorial',
+		'week1',
+		'week2',
+		'week3',
+		'week4',
+		'week5',
+		'week6'
+		];
 	var scoreText:FlxText;
 
 	public static var weekData:Array<Dynamic>;

@@ -68,6 +68,7 @@ class PlayState extends MusicBeatState
 	public var ratingName:String = '?';
 	public var ratingPercent:Float;
 	public var ratingFC:String;
+	var notesHitArray:Array<Date> = [];
 	//public var ratingStuff:String;
 	public static var ratingStuff:Array<Dynamic> = [
 		['You Suck!', 0.2], //From 0% to 19%
@@ -180,10 +181,11 @@ class PlayState extends MusicBeatState
 
 	private var health:Float = 1;
 	private var combo:Int = 0;
-	public static var misses:Int = 0;
+	public var misses:Int = 0;
 	public static var deaths:Int = 0;
 	private var accuracy:Float = 0.00;
 	private var totalNotesHit:Float = 0;
+	private var totalNotesHitDefault:Float = 0;
 	private var totalPlayed:Int = 0;
 
 	private var healthBarBG:FlxSprite;
@@ -246,6 +248,7 @@ class PlayState extends MusicBeatState
 
 	var talking:Bool = true;
 	var songScore:Int = 0;
+	var trueScore:Int = 0;
 	var scoreTxt:FlxText;
 
 	public static var campaignScore:Int = 0;
@@ -843,6 +846,10 @@ class PlayState extends MusicBeatState
 				dad.x -= 150;
 				dad.y += 100;
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
+			case 'face' | 'tankman':
+				dad.x += 150;
+				dad.y += 360;
+				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 		}
 
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
@@ -1018,6 +1025,10 @@ class PlayState extends MusicBeatState
 			iconColor2 = "FFFF3C6E";
 		else if (boyfriend.curCharacter.startsWith('gf'))
 			iconColor2 = "FFDB0066";
+		else if (boyfriend.curCharacter.startsWith('face'))
+			iconColor2 = "FFA1A1A1";
+		else if (boyfriend.curCharacter.startsWith('tank'))
+			iconColor2 = "FFA1A1A1";
 		else
 			iconColor2 = "FF404040";
 
@@ -1043,6 +1054,10 @@ class PlayState extends MusicBeatState
 			iconColor1 = "FFFF3C6E";
 		else if (dad.curCharacter.startsWith('gf'))
 			iconColor1 = "FFDB0066";
+		else if (dad.curCharacter.startsWith('face'))
+			iconColor1 = "FFA1A1A1";
+		else if (dad.curCharacter.startsWith('tank'))
+			iconColor1 = "FFA1A1A1";
 		else
 			iconColor1 = "FF404040";
 
@@ -1058,11 +1073,19 @@ class PlayState extends MusicBeatState
 				scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
 				scoreTxt.setFormat(Paths.font("vcr"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();
+			case "none-misses":
+				scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
+				scoreTxt.setFormat(Paths.font("vcr"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				scoreTxt.scrollFactor.set();
 			case "simple":
 				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
 				scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();		
 			case "psych":
+				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
+				scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				scoreTxt.scrollFactor.set();		
+			case "psych-kade":
 				scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
 				scoreTxt.setFormat(Paths.font("vcr"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();		
@@ -1777,7 +1800,8 @@ class PlayState extends MusicBeatState
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
-
+	var nps:Int = 0;
+	var maxNPS:Int = 0;
 	function truncateFloat( number : Float, precision : Int): Float {
 		var num = number;
 		num = num * Math.pow(10, precision);
@@ -1846,16 +1870,39 @@ class PlayState extends MusicBeatState
 				}
 				// phillyCityLights.members[curLight].alpha -= (Conductor.crochet / 1000) * FlxG.elapsed;
 		}
-
+		{
+			var balls = notesHitArray.length - 1;
+			while (balls >= 0)
+			{
+				var cock:Date = notesHitArray[balls];
+				if (cock != null && cock.getTime() + 1000 < Date.now().getTime())
+					notesHitArray.remove(cock);
+				else
+					balls = 0;
+				balls--;
+			}
+			nps = notesHitArray.length;
+			if (nps > maxNPS)
+				maxNPS = nps;
+		}
 		super.update(elapsed);
-
+		//psych-kade lol
+		//none-misses lol
 		switch(Config.accuracy){
 			case "none":
+				scoreTxt.text = "Score:" + songScore;
+			case "none-misses":
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses;
 			case "simple":
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
 			case "psych":
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Rating:" + Ratings.GenerateLetterRank(accuracy) + " (" + truncateFloat(accuracy, 2) + "%) - " + ratingFC;
+			case "psych-kade":
+				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Rating:" + RatingsKade.GenerateLetterRank(accuracy) + " (" + truncateFloat(accuracy, 2) + "%) - " + ratingFC;
+			case "kade":
+				scoreTxt.text = "Score:" + songScore + " (" + trueScore + ") | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | (" + ratingFC + ") " + RatingsKade.GenerateLetterRank(accuracy);
+			case "kade-nps":
+				scoreTxt.text = "NPS:" + nps + " | Score:" + songScore + " (" + trueScore + ") | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | (" + ratingFC + ") " + RatingsKade.GenerateLetterRank(accuracy);
 			default:
 				scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Combo:" + combo + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | Health:" + Math.round(health * 50) + "%";
 		}
@@ -1890,7 +1937,7 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.SEVEN)
 		{
-			misses = 0;
+			//misses = 0;
 			PlayerSettings.menuControls();
 			switchState(new ChartingState());
 			sectionStart = false;
@@ -2219,7 +2266,7 @@ class PlayState extends MusicBeatState
 					}
 				});
 
-				if (dad.curCharacter.startsWith('monster') && health > 0.03)
+				if (dad.curCharacter.startsWith('monster') && health > 0.03 && !daNote.isSustainNote)
 				{
 					health -= 0.025;		
 				}
@@ -2239,7 +2286,7 @@ class PlayState extends MusicBeatState
 	public function endSong():Void
 	{
 		deaths = 0;
-		misses = 0; // shit was fuckin' up
+		//misses = 0; // shit was fuckin' up
 		Lib.application.window.title = "Friday Night Funkin' FPS Plus";
 		canPause = false;
 		FlxG.sound.music.volume = 0;
@@ -2346,12 +2393,13 @@ class PlayState extends MusicBeatState
 				daRating = 'shit';
 				scoreTxt.color = FlxColor.RED;
 				if(Config.accuracy == "complex") {
-					totalNotesHit += 1 - Conductor.shitZone;
+					totalNotesHit += 0 - Conductor.shitZone;
 				}
 				else {
-					totalNotesHit += 1;
+					totalNotesHit += 0;
 				}
 				score = 50;
+				trueScore += 350;
 				health += 0.0015 * Config.healthMultiplier;
 			}
 		else if (noteDiff > Conductor.safeZoneOffset * Conductor.badZone)
@@ -2361,11 +2409,12 @@ class PlayState extends MusicBeatState
 				scoreTxt.color = FlxColor.ORANGE;
 				score = 100;
 				if(Config.accuracy == "complex") {
-					totalNotesHit += 1 - Conductor.badZone;
+					totalNotesHit += 0.50 - Conductor.badZone;
 				}
 				else {
-					totalNotesHit += 1;
+					totalNotesHit += 0.50;
 				}
+				trueScore += 350;
 				health += 0.0015 * Config.healthMultiplier;
 			}
 		else if (noteDiff > Conductor.safeZoneOffset * Conductor.goodZone)
@@ -2374,16 +2423,18 @@ class PlayState extends MusicBeatState
 				daRating = 'good';
 				scoreTxt.color = FlxColor.LIME;
 				if(Config.accuracy == "complex") {
-					totalNotesHit += 1 - Conductor.goodZone;
+					totalNotesHit += 0.75 - Conductor.goodZone;
 				}
 				else {
-					totalNotesHit += 1;
+					totalNotesHit += 0.75;
 				}
+				trueScore += 350;
 				score = 200;
 				health += 0.015 * Config.healthMultiplier;		
 			}
 		if (daRating == 'sick')
 		{
+			trueScore += 350;
 			sicks += 1;
 			scoreTxt.color = FlxColor.CYAN;
 			totalNotesHit += 1;
@@ -2956,9 +3007,9 @@ class PlayState extends MusicBeatState
 			{
 				popUpScore(note.strumTime);
 				combo += 1;
+				updateAccuracy();
+				notesHitArray.unshift(Date.now());
 			}
-			else
-				totalNotesHit += 1;
 
 			/*if (note.noteData >= 0){
 				health += 0.015 * Config.healthMultiplier;
@@ -3007,7 +3058,6 @@ class PlayState extends MusicBeatState
 			if(!note.isSustainNote){
 				note.destroy();
 			}
-			updateAccuracy();
 		}
 	}
 

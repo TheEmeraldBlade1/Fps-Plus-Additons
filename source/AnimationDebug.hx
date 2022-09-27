@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
+
 import openfl.desktop.ClipboardFormats;
 import openfl.desktop.Clipboard;
 import flixel.FlxCamera;
@@ -43,7 +47,11 @@ class AnimationDebug extends FlxState
 
 	override function create()
 	{
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Animation Debug", null);
+		#end
+		FlxG.mouse.visible = true;
 		openfl.Lib.current.stage.frameRate = 144;
 
 		camGame = new FlxCamera();
@@ -99,7 +107,7 @@ class AnimationDebug extends FlxState
 
 	function genBoyOffsets(pushList:Bool = true):Void
 	{
-		var daLoop:Int = 0;
+		/*var daLoop:Int = 0;
 
 		for (anim => offsets in dad.animOffsets)
 		{
@@ -107,6 +115,21 @@ class AnimationDebug extends FlxState
 			text.scrollFactor.set(0);
 			text.color = FlxColor.BLUE;
 			text.cameras = [camHUD];
+			dumbTexts.add(text);
+
+			if (pushList)
+				animList.push(anim);
+
+			daLoop++;
+		}*/
+		var daLoop:Int = 0;
+
+		for (anim => offsets in dad.animOffsets)
+		{
+			var text:FlxText = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
+			text.setFormat(Paths.font("vcr.ttf"), 16);
+			text.scrollFactor.set(0);
+			text.color = FlxColor.BLACK;
 			dumbTexts.add(text);
 
 			if (pushList)
@@ -158,7 +181,11 @@ class AnimationDebug extends FlxState
 		{
 			camFollow.velocity.set();
 		}
-
+		if (FlxG.keys.justPressed.ENTER)
+		{
+			FlxG.switchState(new PlayState());
+			FlxG.mouse.visible = false;
+		}
 		if (FlxG.keys.justPressed.W)
 		{
 			curAnim -= 1;
@@ -191,6 +218,7 @@ class AnimationDebug extends FlxState
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			FlxG.switchState(new PlayState());
+			FlxG.mouse.visible = false;
 		}
 
 		var upP = FlxG.keys.anyJustPressed([UP]);

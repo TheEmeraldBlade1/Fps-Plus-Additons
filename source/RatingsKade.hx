@@ -1,6 +1,6 @@
 import flixel.FlxG;
 
-class Ratings
+class RatingsKade
 {
 	public static function GenerateLetterRank(accuracy:Float) // generate a letter ranking
 	{
@@ -37,37 +37,37 @@ class Ratings
 				switch (i)
 				{
 					case 0:
-						ranking += "Perfect!!";
+						ranking += "AAAAA";
 					case 1:
-						ranking += "Sick!";
+						ranking += "AAAA:";
 					case 2:
-						ranking += "Great";
+						ranking += "AAAA.";
 					case 3:
-						ranking += "Good";
+						ranking += "AAAA";
 					case 4:
-						ranking += "Nice";
+						ranking += "AAA:";
 					case 5:
-						ranking += "Meh";
+						ranking += "AAA.";
 					case 6:
-						ranking += "Ok";
+						ranking += "AAA";
 					case 7:
-						ranking += "Non Gamer";
+						ranking += "AA:";
 					case 8:
-						ranking += "Noob";
+						ranking += "AA.";
 					case 9:
-						ranking += "Bruh";
+						ranking += "AA";
 					case 10:
-						ranking += "Bad";
+						ranking += "A:";
 					case 11:
-						ranking += "Shit";
+						ranking += "A.";
 					case 12:
-						ranking += "Medium Shit!";
+						ranking += "A";
 					case 13:
-						ranking += "BIG SHIT!!";
+						ranking += "B";
 					case 14:
-						ranking += "MEGA SHIT!!!";
+						ranking += "C";
 					case 15:
-						ranking += "GIGA SHIT!!!!";
+						ranking += "D";
 				}
 				break;
 			}

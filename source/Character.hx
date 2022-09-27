@@ -488,6 +488,16 @@ class Character extends FlxSprite
 				addOffset("singDOWN-alt", -30, -27);
 
 				playAnim('idle');
+				default:
+					// DAD ANIMATION LOADING CODE
+					frames = Paths.getSparrowAtlas("cuteboi/lilOpp");
+					animation.addByPrefix('idle', 'idle', 12, false);
+					animation.addByPrefix('singUP', 'up', 12, false);
+					animation.addByPrefix('singRIGHT', 'right', 12, false);
+					animation.addByPrefix('singDOWN', 'down', 12, false);
+					animation.addByPrefix('singLEFT', 'left', 12, false);
+					setGraphicSize(Std.int(width * 6));
+					playAnim('idle');
 		}
 
 		dance();

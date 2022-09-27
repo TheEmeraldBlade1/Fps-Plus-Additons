@@ -92,7 +92,7 @@ class PauseSubState extends MusicBeatSubstate
 					unpause();
 					
 				case "Restart Song":
-					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					//PlayState.misses = 0; // stop carring over to other songs mother fucker
 					PlayState.deaths = 0;
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
@@ -100,14 +100,14 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.sectionStart = false;
 
 				case "Restart Section":
-					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					//PlayState.misses = 0; // stop carring over to other songs mother fucker
 					PlayState.deaths = 0;
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
 					FlxG.resetState();
 
 				case "Chart Editor":
-					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					//PlayState.misses = 0; // stop carring over to other songs mother fucker
 					PlayState.deaths = 0;
 					PlayerSettings.menuControls();
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
@@ -115,7 +115,7 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.instance.switchState(new ChartingState());
 					
 				case "Skip Song":
-					PlayState.misses = 0; // stop carring over to other songs mother fucker
+					//PlayState.misses = 0; // stop carring over to other songs mother fucker
 					PlayState.deaths = 0;
 					PlayState.instance.endSong();
 					
@@ -173,7 +173,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to menu":
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyDown);
 					//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, PlayState.instance.keyUp);
-					PlayState.misses = 0; // stop carring over to other songs mother fucker
+				//	PlayState.misses = 0; // stop carring over to other songs mother fucker
 					PlayState.deaths = 0;
 					PlayState.sectionStart = false;
 					if (PlayState.isStoryMode)

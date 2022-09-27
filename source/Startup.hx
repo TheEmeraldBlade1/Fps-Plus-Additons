@@ -1,5 +1,7 @@
 package;
-
+#if desktop
+import Discord.DiscordClient;
+#end
 import openfl.media.Sound;
 import title.*;
 import config.*;
@@ -12,6 +14,7 @@ import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.text.FlxText;
+import lime.app.Application;
 import openfl.system.System;
 //import openfl.utils.Future;
 //import flixel.addons.util.FlxAsyncLoop;
@@ -68,7 +71,15 @@ class Startup extends FlxState
 
 	override function create()
 	{
-
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.initialize();
+		
+		Application.current.onExit.add (function (exitCode) {
+			DiscordClient.shutdown();
+		 });
+		DiscordClient.changePresence("Preloading Assets", null);
+		#end
         FlxG.mouse.visible = false;
         FlxG.sound.muteKeys = null;
 
@@ -185,11 +196,14 @@ class Startup extends FlxState
 
         if(!cacheStart && FlxG.keys.justPressed.ANY){
             
-           
+
             openPreloadSettings();
 
         }
-
+		if (FlxG.keys.justPressed.ENTER)
+		{
+            openPreloadSettings();
+		}
         if(startCachingCharacters){
             if(charI >= characters.length){
                 loadingText.text = "Characters cached...";

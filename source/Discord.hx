@@ -36,7 +36,7 @@ class DiscordClient
 	static function onReady()
 	{
 		DiscordRpc.presence({
-			details: "In the Menus",
+			details: "Preloading Assets",
 			state: null,
 			largeImageKey: 'discordrpcshit',
 			largeImageText: "Friday Night Funkin' FPS PLUS"
