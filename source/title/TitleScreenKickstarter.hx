@@ -40,11 +40,8 @@ class TitleScreenKickstarter extends MusicBeatState
 	override public function create():Void
 	{
 		#if desktop
-		DiscordClient.initialize();
-		
-		Application.current.onExit.add (function (exitCode) {
-			DiscordClient.shutdown();
-		 });
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Title Kickstarter", null);
 		#end
 		//Polymod.init({modRoot: "mods", dirs: ['introMod']});
 

@@ -40,11 +40,7 @@ class TitleScreen extends MusicBeatState
 	override public function create():Void
 	{
 		#if desktop
-		DiscordClient.initialize();
-		
-		Application.current.onExit.add (function (exitCode) {
-			DiscordClient.shutdown();
-		 });
+		DiscordClient.changePresence("Title Screen", null);
 		#end
 		//Polymod.init({modRoot: "mods", dirs: ['introMod']});
 
